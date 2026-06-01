@@ -526,13 +526,12 @@
   isolation: isolate;
   overflow: hidden;
   background-color: #163fb8;
-  /* Bulletproof Safari border-radius clipping */
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  /* Safari: force GPU layer + mask to enforce border-radius clipping on children */
+  -webkit-mask-image: linear-gradient(#fff 0 0);
+  mask-image: linear-gradient(#fff 0 0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-  z-index: 1;
+  will-change: transform;
 }
 .aurora-grad::before {
   content: "";
@@ -604,6 +603,12 @@
   isolation: isolate;
   overflow: hidden;
   background-color: #eee9dc;
+  /* Safari: force GPU layer + mask to enforce border-radius clipping on children */
+  -webkit-mask-image: linear-gradient(#fff 0 0);
+  mask-image: linear-gradient(#fff 0 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
   /* фолбэк-меш под канвасом (виден, если canvas не стартовал) */
   background-image:
     radial-gradient(40% 64% at 18% 24%, #4f86ff 0%, rgba(79, 134, 255, 0) 58%),
