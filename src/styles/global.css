@@ -213,6 +213,13 @@
     margin-left: -10px;
     opacity: 0;
   }
+  @media (max-width: 980px) {
+    .nav-header[data-scrolled="true"] .nav-logo-name {
+      max-width: 160px;
+      margin-left: 0;
+      opacity: 1;
+    }
+  }
   /* center nav: bare on canvas by default, themed light when collected */
   .nav-center {
     gap: 2px;
@@ -519,6 +526,8 @@
   isolation: isolate;
   overflow: hidden;
   background-color: #163fb8;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-transform: translateZ(0);
 }
 .aurora-grad::before {
   content: "";
