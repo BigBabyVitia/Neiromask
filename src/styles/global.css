@@ -526,8 +526,13 @@
   isolation: isolate;
   overflow: hidden;
   background-color: #163fb8;
+  /* Bulletproof Safari border-radius clipping */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
-  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  z-index: 1;
 }
 .aurora-grad::before {
   content: "";
