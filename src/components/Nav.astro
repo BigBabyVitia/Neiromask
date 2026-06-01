@@ -1,0 +1,47 @@
+---
+import MobileNav from './islands/MobileNav.tsx';
+import SilkBg from './SilkBg.astro';
+
+const links = [
+  { href: '#problem', label: 'Проблема' },
+  { href: '#fit', label: 'Где работает' },
+  { href: '#how', label: 'Как работает' },
+  { href: '#example', label: 'Пример' },
+  { href: '#pilot', label: 'Цена' },
+];
+---
+
+<header class="nav-header sticky top-0 z-30" id="site-header" data-scrolled="false">
+  <div class="nav-bar">
+    <div class="nav-side nav-side--left">
+      <a class="nav-logo" href="#top">
+        <span class="logo-mark silk-grad silk-grad--deep" aria-hidden="true">
+          <SilkBg variant="deep" />
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </span>
+        <span class="nav-logo-name">НейроМаск</span>
+      </a>
+    </div>
+
+    <nav class="nav-center hidden md:flex" aria-label="Разделы">
+      {links.map((l) => <a class="nav-link" href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <div class="nav-side nav-side--right">
+      <MobileNav links={links} client:load />
+      <a class="nav-cta hidden md:inline-flex" href="#request">Разобрать сценарий</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const onScroll = () => {
+    header?.setAttribute('data-scrolled', String(window.scrollY > 8));
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

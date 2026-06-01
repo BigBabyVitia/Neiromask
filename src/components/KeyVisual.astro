@@ -1,0 +1,466 @@
+---
+// KeyVisual — hero-«воронка» в стиле dropship.io, перекрашенная под НейроМаск:
+// карточки персональных данных. Лежат на дуге (bowl/straight/arch, радиус 3000) →
+// расходятся веером и поворачиваются от центра. Скелетон-клон: слева от центра —
+// сырые незащищённые ПДн (реальная карточка), справа — маскированный серый скелетон.
+// Центральная изогнутая парабола-луч + светящаяся нода. Скролл рядов — CSS, все
+// ряды в одну сторону. Кривая+клип — rAF (как в оригинале).
+import SilkBg from './SilkBg.astro';
+
+// Иконки типов ПДн (inner-SVG, currentColor)
+const icons: Record<string, string> = {
+  user: '<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c0-3.8 3.4-5.8 7.5-5.8s7.5 2 7.5 5.8"/>',
+  phone: '<rect x="6.5" y="2.5" width="11" height="19" rx="2.4"/><path d="M10.5 18.5h3"/>',
+  id: '<rect x="2.5" y="5" width="19" height="14" rx="2.4"/><circle cx="8" cy="11.5" r="2.4"/><path d="M14 10h5M14 14h4"/>',
+  mail: '<rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3.5 7.5l8.5 6 8.5-6"/>',
+  card: '<rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 10h19"/>',
+  doc: '<path d="M14 3H7.5A2 2 0 0 0 5.5 5v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h4.5"/>',
+  pin: '<path d="M12 21.5s6.8-6.2 6.8-11.5a6.8 6.8 0 1 0-13.6 0c0 5.3 6.8 11.5 6.8 11.5z"/><circle cx="12" cy="9.5" r="2.4"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="16" rx="2.4"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  hash: '<path d="M5 9.5h14M5 14.5h14M10.5 4l-2 16M15.5 4l-2 16"/>',
+};
+
+type Card = { icon: string; type: string; raw: string; ph: string };
+
+// curve по индексу ряда: 0=bowl, 1=straight, 2=arch
+const rows: Card[][] = [
+  [
+    { icon: 'user', type: 'ФИО', raw: 'Анна Смирнова', ph: '[Person_1]' },
+    { icon: 'phone', type: 'Телефон', raw: '+7 999 123-45-67', ph: '[Phone_1]' },
+    { icon: 'id', type: 'Паспорт', raw: '4510 №123456', ph: '[Passport_1]' },
+    { icon: 'mail', type: 'Email', raw: 'a.smirnova@firma.ru', ph: '[Email_1]' },
+    { icon: 'card', type: 'Карта', raw: '4276 •••• 8821', ph: '[Card_1]' },
+    { icon: 'hash', type: 'СНИЛС', raw: '112-233-445 95', ph: '[SNILS_1]' },
+    { icon: 'pin', type: 'Адрес', raw: 'ул. Ленина, 14', ph: '[Address_1]' },
+    { icon: 'cal', type: 'Дата рожд.', raw: '12.04.1990', ph: '[DOB_1]' },
+    { icon: 'doc', type: 'Договор', raw: '№ NK-4821', ph: '[Contract_1]' },
+  ],
+  [
+    { icon: 'phone', type: 'Телефон', raw: '+7 921 555-10-20', ph: '[Phone_2]' },
+    { icon: 'user', type: 'ФИО', raw: 'Иван Петров', ph: '[Person_2]' },
+    { icon: 'hash', type: 'ИНН', raw: '7701 123456', ph: '[INN_1]' },
+    { icon: 'mail', type: 'Email', raw: 'i.petrov@mail.ru', ph: '[Email_2]' },
+    { icon: 'id', type: 'Паспорт', raw: '4012 №998877', ph: '[Passport_2]' },
+    { icon: 'card', type: 'Карта', raw: '5536 •••• 1043', ph: '[Card_2]' },
+    { icon: 'doc', type: 'Договор', raw: '№ NK-5190', ph: '[Contract_2]' },
+    { icon: 'pin', type: 'Адрес', raw: 'пр. Мира, 7-12', ph: '[Address_2]' },
+    { icon: 'user', type: 'ФИО', raw: 'Ольга Кузнецова', ph: '[Person_3]' },
+  ],
+  [
+    { icon: 'cal', type: 'Дата рожд.', raw: '03.11.1985', ph: '[DOB_2]' },
+    { icon: 'card', type: 'Карта', raw: '4081 •••• 7765', ph: '[Card_3]' },
+    { icon: 'user', type: 'ФИО', raw: 'Дмитрий Орлов', ph: '[Person_4]' },
+    { icon: 'phone', type: 'Телефон', raw: '+7 905 777-88-99', ph: '[Phone_3]' },
+    { icon: 'hash', type: 'СНИЛС', raw: '987-654-321 00', ph: '[SNILS_2]' },
+    { icon: 'mail', type: 'Email', raw: 'd.orlov@corp.ru', ph: '[Email_3]' },
+    { icon: 'id', type: 'Паспорт', raw: '4509 №445566', ph: '[Passport_3]' },
+    { icon: 'pin', type: 'Адрес', raw: 'ул. Садовая, 3', ph: '[Address_3]' },
+    { icon: 'doc', type: 'Договор', raw: '№ NK-6042', ph: '[Contract_3]' },
+  ],
+];
+
+const curves = ['bowl', 'straight', 'arch'];
+---
+
+<section class="kv-band">
+  <div aria-hidden="true" class="hero_marquee-wrap" data-hero-marquee>
+    <div class="hero_marquee_component" data-radius="3000">
+      <div class="hero_beam">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="hero_beam_svg">
+          <defs>
+            <linearGradient id="kvBeam" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6f675c" stop-opacity="0" />
+              <stop offset="1" stop-color="#6f675c" stop-opacity="0.09" />
+            </linearGradient>
+          </defs>
+          <path d="M50 0 Q 50 50 0 100 L 100 100 Q 50 50 50 0 Z" fill="url(#kvBeam)" />
+        </svg>
+      </div>
+      <div class="hero_gradient"></div>
+
+      <div class="hero_marquee_rows">
+      {
+        rows.map((items, ri) => (
+          <div class="hero_marquee_layout" data-curve={curves[ri]}>
+            <div class="hero_marquee_track">
+              {[0, 1].map(() => (
+                <div class="hero_marquee_panel">
+                  <div class="hero_marquee_list">
+                    {items.map((c) => (
+                      <div class="hero_marquee_item" data-mq-item>
+                        <div class="hero_marquee_img-wrap">
+                          <svg class="kv-ico" viewBox="0 0 24 24" fill="none">
+                            <Fragment set:html={icons[c.icon]} />
+                          </svg>
+                        </div>
+                        <div class="hero_marquee_text-wrap">
+                          <p class="kv-value">{c.raw}</p>
+                          <p class="kv-type">{c.type}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      </div>
+
+      <div class="hero_icon-wrap silk-grad--deep">
+        <div class="hero_icon-inner silk-grad silk-grad--deep">
+          <SilkBg variant="deep" />
+          <svg viewBox="0 0 24 24" fill="none" class="hero_icon-svg" aria-hidden="true">
+            <path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ===== hero-marquee (dropship-механика) — токены резолвнуты =====
+     white #fff | lightest #efefef | shade-5 #0000000d | brand #225aea  */
+
+  .hero_marquee-wrap {
+    z-index: 1;
+    width: 100%;
+    max-width: 100rem;
+    margin: 2rem auto 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+    overflow: visible; /* вертикаль не режем — клип по горизонтали на рядах */
+    pointer-events: none; /* убраны все ховеры */
+  }
+
+  .hero_marquee_component {
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position: relative;
+  }
+
+  /* центральная изогнутая парабола-луч.
+     ширина = 100vw (низ всегда на всю ширину экрана), высота = высота эффекта
+     (не растёт от ширины), вписана в контейнер — не торчит за границы */
+  .hero_beam {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero_beam_svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* центральная направляющая — чёткая тонкая линия, фейд по вертикали, без блюра */
+  .hero_gradient {
+    z-index: 2; /* над карточками рядов (z1), под нодой (z3) — видна на всю высоту */
+    pointer-events: none;
+    background-image: linear-gradient(180deg, #6f675c00, #6f675c 14%, #6f675c 86%, #6f675c00);
+    width: 2px;
+    /* высота = высота рядов минус их padding-block (4rem×2): линия живёт только
+       над карточками и не торчит белой чертой в зазоре до второго экрана */
+    height: calc(100% - 8rem);
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+  }
+
+  /* обёртка всех рядов: маска-фейд по краям + клип трека.
+     padding-block даёт вертикальный запас — поднятые веером карточки не режутся */
+  .hero_marquee_rows {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    row-gap: 1rem;
+    padding-block: 4rem;
+    overflow: clip;
+    -webkit-mask-image: linear-gradient(90deg, #0000, #000 12% 88%, #0000);
+    mask-image: linear-gradient(90deg, #0000, #000 12% 88%, #0000);
+  }
+
+  .hero_marquee_layout {
+    flex: none;
+    width: 100%;
+    display: flex;
+    overflow: visible;
+    container-type: inline-size;
+  }
+
+  .hero_marquee_track {
+    animation: ds-marquee 38s linear infinite reverse;
+    will-change: transform;
+    flex: none;
+    display: flex;
+    overflow: visible;
+  }
+
+  @keyframes ds-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .hero_marquee_panel {
+    flex: none;
+    display: flex;
+    overflow: visible;
+  }
+
+  .hero_marquee_list {
+    grid-column-gap: 1.6rem;
+    grid-row-gap: 1.6rem;
+    flex: none;
+    justify-content: space-around;
+    min-width: 100cqw;
+    padding-right: 1.6rem;
+    display: flex;
+    overflow: visible;
+  }
+
+  /* геометрия/отступы/шрифты — Figma-эталон 288:454, палитра тёплая (НейроМаск) */
+  .hero_marquee_item {
+    grid-column-gap: 0.375rem; /* 6px */
+    border: 1px solid rgba(0, 0, 0, 0.03); /* stroke 3% чёрного */
+    background-color: #fff;
+    will-change: transform;
+    transform-origin: 50% 50%;
+    border-radius: 1rem; /* 16px */
+    flex-flow: row;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    padding: 0.375rem 1rem 0.375rem 0.375rem; /* 6 / 16 / 6 / 6 */
+    display: flex;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  /* ключевой визуальный элемент — прямоугольник 56×48 (не квадрат) */
+  .hero_marquee_img-wrap {
+    background-color: #efece6;
+    border-radius: 0.75rem; /* 12px */
+    width: 3.5rem; /* 56px */
+    height: 3rem; /* 48px */
+    position: relative;
+    overflow: hidden;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kv-ico {
+    width: 1.75rem; /* 28px */
+    height: 1.75rem;
+    color: #6f675c;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hero_marquee_text-wrap {
+    grid-row-gap: 0.25rem; /* 4px */
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    display: flex;
+    min-width: 0;
+  }
+  .kv-value {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em; /* -0.14px */
+    color: #33302a;
+  }
+  .kv-type {
+    margin: 0;
+    white-space: nowrap;
+    font-size: 0.75rem; /* 12px */
+    font-weight: 500;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.07em; /* 0.84px */
+    color: #8c8579;
+  }
+
+  /* ---- скелетон-клон (.kv-skel) — серая версия карточки ---- */
+  .hero_marquee_item.kv-skel {
+    background-color: #ffffffcc;
+    box-shadow: none;
+    border-color: #00000008;
+  }
+  .kv-skel .hero_marquee_img-wrap {
+    background-color: #f1ede7;
+  }
+  .kv-skel .kv-ico {
+    opacity: 0;
+  }
+  /* бары чуть раздвинуты по вертикали — outline съедал row-gap текст-врапа */
+  .kv-skel .hero_marquee_text-wrap {
+    row-gap: 0.5rem;
+  }
+  .kv-skel .kv-value {
+    color: #0000;
+    background-color: #f0eae1;
+    border-radius: 0.2rem;
+    outline: 0.14rem solid #f0eae1;
+    overflow: hidden;
+  }
+  .kv-skel .kv-type {
+    color: #0000;
+    background-color: #f5f1ea;
+    border-radius: 0.2rem;
+    outline: 0.12rem solid #f5f1ea;
+    overflow: hidden;
+  }
+
+  /* центральная светящаяся нода — фон даёт .aurora-grad (global) */
+  .hero_icon-wrap {
+    z-index: 3;
+    width: 4rem;
+    height: 4rem;
+    color: #fff;
+    border-radius: 1.2rem;
+    padding: 1px;
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    box-shadow:
+      inset 0 1px 0 #ffffff66,
+      0 12px 40px #225aea4d;
+  }
+  .hero_icon-inner {
+    aspect-ratio: 1;
+    border-radius: 0.94rem;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+  }
+  .hero_icon-svg {
+    width: 2.2rem;
+    height: 2.2rem;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* белый щит читаем над кремовым бликом */
+    filter: drop-shadow(0 1px 2px #1b3aa24d);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero_marquee_track {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Порт dropship bt(): дуга (bowl/straight/arch) + скелетон-клон с clip-path.
+  function initKvMarquee() {
+    const comp = document.querySelector<HTMLElement>('.hero_marquee_component');
+    if (!comp || comp.dataset.kvInit) return;
+    comp.dataset.kvInit = '1';
+
+    const mobile = window.innerWidth <= 767;
+    const t = parseFloat(comp.dataset.radius || (mobile ? '1800' : '3000'));
+    const fallbackCurves = ['bowl', 'straight', 'arch'];
+
+    const layouts = Array.from(comp.querySelectorAll<HTMLElement>('.hero_marquee_layout')).map(
+      (n, i) => ({
+        curve: n.dataset.curve || fallbackCurves[i] || 'straight',
+        items: Array.from(n.querySelectorAll<HTMLElement>('[data-mq-item]')),
+      })
+    );
+
+    // скелетон-клон поверх каждой карточки
+    comp.querySelectorAll<HTMLElement>('[data-mq-item]').forEach((n) => {
+      if (n.querySelector('.kv-skel')) return;
+      n.style.position = 'relative';
+      const clone = n.cloneNode(true) as HTMLElement;
+      clone.removeAttribute('data-mq-item');
+      clone.querySelectorAll('[data-mq-item]').forEach((x) => x.remove());
+      clone.classList.add('kv-skel');
+      Object.assign(clone.style, {
+        position: 'absolute',
+        inset: '0',
+        pointerEvents: 'none',
+        zIndex: '2',
+        margin: '0',
+        width: '100%',
+        height: '100%',
+      });
+      n.appendChild(clone);
+    });
+
+    let visible = true;
+    const DEG = 180 / Math.PI;
+
+    const frame = () => {
+      if (!visible) return;
+      const cr = comp.getBoundingClientRect();
+      const cx = cr.left + cr.width / 2;
+      for (const { curve, items } of layouts) {
+        for (const k of items) {
+          const s = k.getBoundingClientRect();
+          const w = s.left + s.width / 2 - cx;
+          const skel = k.querySelector<HTMLElement>('.kv-skel');
+          if (curve !== 'straight') {
+            const b = Math.min(Math.abs(w), t);
+            const x = Math.sqrt(t * t - b * b) - t;
+            const M = Math.atan2(b, Math.sqrt(t * t - b * b)) * DEG * Math.sign(w);
+            const y = curve === 'bowl' ? x : -x;
+            const rot = curve === 'bowl' ? -M : M;
+            k.style.transform = `translate3d(0, ${y}px, 0) rotate(${rot}deg)`;
+          }
+          if (skel) {
+            const bw = k.offsetWidth;
+            // слева от центра — сырые ПДн (реальная карточка), справа — маскированный скелетон
+            const L = Math.max(0, Math.min(bw, Math.round(cx - s.left)));
+            skel.style.clipPath = `inset(0 0 0 ${L}px round 16px)`;
+          }
+        }
+      }
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (visible = e.isIntersecting)),
+      { threshold: 0 }
+    );
+    io.observe(comp);
+
+    const loop = () => {
+      frame();
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  initKvMarquee();
+  document.addEventListener('astro:page-load', initKvMarquee);
+</script>

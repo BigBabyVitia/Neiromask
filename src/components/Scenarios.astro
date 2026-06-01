@@ -1,0 +1,105 @@
+---
+const scenarios = [
+  {
+    title: 'Документы и сканы',
+    chip: 'B',
+    accent: 'aj-big',
+    variant: 'feature',
+    now: 'Файлы содержат ФИО, паспорта, реквизиты и номера договоров.',
+    mask: 'Персональные данные маскируются до API-модели, а результат остаётся полезным.',
+  },
+  {
+    title: 'Договоры и юридические тексты',
+    chip: 'B',
+    accent: 'aj-big',
+    variant: 'wide',
+    now: 'Юристы не могут отправлять исходный текст договора во внешнюю LLM.',
+    mask: 'Контрагенты, суммы и реквизиты скрываются до отправки.',
+  },
+  {
+    title: 'Клиентская поддержка',
+    chip: 'S',
+    accent: 'aj-small',
+    variant: 'standard',
+    now: 'Тикеты содержат персональные данные, историю обращений и внутренние комментарии.',
+    mask: 'AI используется через официальный канал с журналом и маскированием.',
+  },
+  {
+    title: 'Финансы и операции',
+    chip: 'S',
+    accent: 'aj-small',
+    variant: 'standard',
+    now: 'Отчёты и выгрузки содержат суммы, контрагентов и внутренние условия.',
+    mask: 'Чувствительные поля заменяются, сценарий можно открыть первым.',
+  },
+  {
+    title: 'HR и рекрутинг',
+    chip: 'P',
+    accent: 'aj-proof',
+    variant: 'soft',
+    paragraph:
+      'Вторичный сценарий: резюме, интервью и анкеты можно использовать как demo case, но не как главный сегмент НейроМаск.',
+    note: 'понятный demo case, но не главный сегмент',
+  },
+];
+
+const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase()}`);
+---
+
+<section class="band" id="usecases">
+  <div class="bento-wrap">
+    <div class="section-head">
+      <h2>Сценарии, где ценность AI и чувствительность данных пересекаются</h2>
+      <p>Главный фокус — документы и сканы. Поддержка, финансы и HR остаются прикладными сценариями, но не главным позиционированием.</p>
+    </div>
+
+    <div class="bento-switch" role="tablist" aria-label="Состояние сценария">
+      <button class="bento-switch__btn is-active" type="button" data-mode="now" aria-selected="true">
+        Сейчас
+      </button>
+      <button class="bento-switch__btn" type="button" data-mode="mask" aria-selected="false">
+        С НейроМаском
+      </button>
+    </div>
+
+    <div class="bento" data-mode="now">
+      {
+        scenarios.map((s) => (
+          <article class={`bento-card bento-card--${s.variant} ${s.accent}`}>
+            <span class="aj-chip">{s.chip}</span>
+            <h3>{s.title}</h3>
+
+            {s.now && <p class="bento-state" data-when="now">{s.now}</p>}
+            {s.mask && <p class="bento-state" data-when="mask">{s.mask}</p>}
+
+            {s.paragraph && <p class="bento-card__lead">{s.paragraph}</p>}
+
+            {s.note && (
+              <div class="aj-note">
+                <span class={keyClass(s.chip)}>{s.chip}</span>
+                <span>{s.note}</span>
+              </div>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.bento-switch').forEach((sw) => {
+    const bento = sw.parentElement?.querySelector<HTMLElement>('.bento');
+    if (!bento) return;
+    sw.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>('.bento-switch__btn');
+      if (!btn) return;
+      sw.querySelectorAll<HTMLElement>('.bento-switch__btn').forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-selected', String(on));
+      });
+      bento.dataset.mode = btn.dataset.mode || 'now';
+    });
+  });
+</script>

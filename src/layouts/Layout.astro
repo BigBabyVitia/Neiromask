@@ -1,0 +1,160 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'НейроМаск — маскирование персональных данных для LLM по API',
+  description = 'НейроМаск скрывает ФИО, телефоны, паспорта и реквизиты до отправки во внешнюю API-модель, сохраняет смысл запроса и возвращает восстановленный ответ в контур Нейроключа.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru" data-concept="contour" data-annotations="off">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400..500&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <slot />
+
+    <!-- Sync shared store → <html> dataset (drives concept theme + scene visibility). -->
+    <script>
+      import { $concept, $annotations } from '../stores/concept';
+      $concept.subscribe((c) => {
+        document.documentElement.dataset.concept = c;
+      });
+      $annotations.subscribe((on) => {
+        document.documentElement.dataset.annotations = on ? 'on' : 'off';
+      });
+    </script>
+
+    <!-- Silk-фон (бренд-эффект): WebGL-шейдер крупных текучих сине-кремовых блобов.
+         Один глобальный init на все <canvas.silk-canvas> (в т.ч. появившиеся после
+         гидрации React-островов — ловим MutationObserver'ом). -->
+    <script>
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FRAG = `precision highp float;
+uniform vec2 u_res;uniform float u_time;uniform float u_seed;uniform float u_var;
+vec2 hash(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
+  return mix(mix(dot(hash(i),f),dot(hash(i+vec2(1,0)),f-vec2(1,0)),u.x),
+             mix(dot(hash(i+vec2(0,1)),f-vec2(0,1)),dot(hash(i+vec2(1,1)),f-vec2(1,1)),u.x),u.y);}
+float fbm(vec2 p){float v=0.,a=.58;for(int i=0;i<3;i++){v+=a*noise(p);p=p*1.9+1.3;a*=.5;}return v;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_res;
+  float asp=u_res.x/u_res.y;
+  vec2 suv=vec2(uv.x*asp,uv.y);
+  float t=u_time*0.025+u_seed*4.0;
+  vec2 p=suv*1.0+u_seed;
+  vec2 w=vec2(fbm(p*0.6+vec2(0.0,t)), fbm(p*0.6+vec2(4.0,-t)));
+  vec2 sp=p+1.05*w;
+  float bf=fbm(sp*0.95+vec2(1.3,0.0))*2.0;
+  float gf=fbm(sp*0.95+vec2(7.0,4.0))*1.7;
+  float sheen=fbm(sp*1.7+vec2(2.0));
+  vec3 col;
+  if(u_var<0.5){
+    vec3 cream=vec3(0.965,0.947,0.870);
+    vec3 blue=vec3(0.20,0.45,1.0);
+    vec3 bluelo=vec3(0.58,0.74,1.0);
+    vec3 gold=vec3(0.98,0.80,0.38);
+    col=cream;
+    col=mix(col,gold,smoothstep(0.14,0.56,gf));
+    col=mix(col,blue,smoothstep(-0.34,0.34,bf));
+    col=mix(col,bluelo,smoothstep(0.5,0.95,bf)*0.5);
+  } else {
+    vec3 base=vec3(0.055,0.13,0.42);
+    vec3 blue=vec3(0.20,0.45,1.0);
+    vec3 bright=vec3(0.42,0.64,1.0);
+    vec3 gold=vec3(0.88,0.74,0.42);
+    col=base;
+    col=mix(col,gold,smoothstep(0.2,0.62,gf)*0.42);
+    col=mix(col,blue,smoothstep(-0.34,0.32,bf));
+    col=mix(col,bright,smoothstep(0.42,0.92,bf)*0.7);
+  }
+  col*=0.97+0.06*sheen;
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+      function compile(gl, type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return s;
+      }
+
+      let seedCounter = 0;
+      function initCanvas(cv) {
+        if (cv.dataset.silkInit) return;
+        cv.dataset.silkInit = '1';
+        const gl = cv.getContext('webgl', { antialias: false, alpha: false });
+        if (!gl) return; // фолбэк-градиент на контейнере остаётся
+        const prog = gl.createProgram();
+        gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, VERT));
+        gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, FRAG));
+        gl.linkProgram(prog);
+        gl.useProgram(prog);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const uRes = gl.getUniformLocation(prog, 'u_res');
+        const uTime = gl.getUniformLocation(prog, 'u_time');
+        const uSeed = gl.getUniformLocation(prog, 'u_seed');
+        const uVar = gl.getUniformLocation(prog, 'u_var');
+        const seed = (seedCounter++) * 7.13;
+        const variant = cv.dataset.variant === 'deep' ? 1 : 0;
+
+        function resize() {
+          const scale = Math.min(window.devicePixelRatio || 1, 2);
+          const wd = Math.max(2, Math.round(cv.clientWidth * scale));
+          const ht = Math.max(2, Math.round(cv.clientHeight * scale));
+          if (cv.width !== wd || cv.height !== ht) {
+            cv.width = wd; cv.height = ht;
+            gl.viewport(0, 0, wd, ht);
+          }
+        }
+        function frame(ms) {
+          resize();
+          gl.uniform2f(uRes, cv.width, cv.height);
+          gl.uniform1f(uTime, reduce ? seed * 40 : ms * 0.001);
+          gl.uniform1f(uSeed, seed);
+          gl.uniform1f(uVar, variant);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+          requestAnimationFrame(frame);
+        }
+        frame(0); // синхронный первый кадр — без мигания фолбэка
+      }
+
+      function scan(root) {
+        if (root.querySelectorAll) root.querySelectorAll('canvas.silk-canvas').forEach(initCanvas);
+      }
+
+      scan(document);
+      // React-острова (Pricing) гидрируются позже — ловим новые канвасы
+      new MutationObserver((muts) => {
+        muts.forEach((m) => m.addedNodes.forEach((n) => {
+          if (n.nodeType !== 1) return;
+          if (n.matches && n.matches('canvas.silk-canvas')) initCanvas(n);
+          else scan(n);
+        }));
+      }).observe(document.body, { childList: true, subtree: true });
+    </script>
+  </body>
+</html>

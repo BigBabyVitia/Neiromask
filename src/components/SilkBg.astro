@@ -1,0 +1,12 @@
+---
+// Silk-фон: <canvas>, который раскрашивает глобальный шейдер (Layout.astro).
+// variant: 'light' — тёплый сине-кремовый mesh (тёмный контент сверху);
+//          'deep'  — тёмно-синий mesh (белый контент сверху: лого, иконки, план).
+interface Props {
+  variant?: 'light' | 'deep';
+  class?: string;
+}
+const { variant = 'light', class: cls = '' } = Astro.props;
+---
+
+<canvas class={`silk-canvas ${cls}`.trim()} data-variant={variant} aria-hidden="true"></canvas>

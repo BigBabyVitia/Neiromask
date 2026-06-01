@@ -1,0 +1,56 @@
+---
+const cloud = [
+  'быстрый запуск;',
+  'доступ к сильным моделям;',
+  'риск передачи персональных данных наружу;',
+  'нет единого аудита и правил.',
+];
+const onprem = [
+  'данные остаются внутри компании;',
+  'высокий уровень контроля;',
+  'дорогая инфраструктура;',
+  'долгий путь до production.',
+];
+---
+
+<section class="section aj-small">
+  <div class="section-head">
+    <span class="aj-chip">S</span>
+    <h2>Третий путь между облаком и on-prem</h2>
+    <p>
+      НейроМаск позволяет использовать качество внешних API-моделей, но не передавать им исходные
+      персональные и чувствительные данные.
+    </p>
+  </div>
+
+  <div class="cards-2">
+    <article class="choice-card">
+      <h3>Незащищённый доступ в облаке</h3>
+      <ul>{cloud.map((i) => <li>{i}</li>)}</ul>
+    </article>
+    <article class="choice-card">
+      <h3>Полностью закрытый контур</h3>
+      <ul>{onprem.map((i) => <li>{i}</li>)}</ul>
+    </article>
+  </div>
+
+  <div class="third-visual">
+    <div class="shot" data-label="img/third-path.png · 1536×1024">
+      <img
+        src="/img/third-path.png"
+        alt="Три подхода: рискованное облако, тяжёлый закрытый контур и сбалансированный НейроМаск"
+        loading="lazy"
+        onerror="this.remove()"
+      />
+    </div>
+  </div>
+
+  <div class="third-path aj-big">
+    НейроМаск: <span class="aj-mark aj-mark-value" data-aj="V">сильные внешние LLM по API + защищённый контур</span> для запроса, документов и ответа.
+  </div>
+
+  <div class="aj-note">
+    <span class="aj-key s">S</span>
+    <span><strong>Снятие барьера выбора:</strong> не заставляем клиента выбирать между небезопасным облаком и тяжёлым on-prem.</span>
+  </div>
+</section>

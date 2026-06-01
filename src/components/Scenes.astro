@@ -1,0 +1,181 @@
+---
+// All design-concept scenes as static markup; CSS shows the one
+// matching <html data-concept>. Toggled from the ConceptDock island.
+---
+
+<!-- contour: главная компактная схема маскирования -->
+<div class="scene" data-scene="contour">
+  <div class="contour-stage">
+    <div class="mask-mini">
+      <div class="mask-mini-card">
+        <div class="node-label">Запрос с персональными данными → маскирование</div>
+        <div class="map-row">
+          <span class="map-real">Анна Смирнова</span><span class="map-to">→</span><span class="map-mask">[Person_1]</span>
+        </div>
+        <div class="map-row">
+          <span class="map-real">+7 999 123-45-67</span><span class="map-to">→</span><span class="map-mask">[Phone_1]</span>
+        </div>
+        <div class="map-row">
+          <span class="map-real">4510 123456</span><span class="map-to">→</span><span class="map-mask">[Passport_1]</span>
+        </div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="mask-mini-llm">
+        <div class="node-label">Внешняя LLM по API</div>
+        <strong>Видит только плейсхолдеры</strong>
+        <p>Смысл задачи сохранён, ответ восстановлен в контуре Нейроключа.</p>
+      </div>
+    </div>
+  </div>
+  <p class="mx-auto mt-3.5 max-w-[760px] text-center text-sm text-muted">
+    Главная схема: человек сразу видит, что во внешнюю API-модель уходят не реальные персональные данные, а безопасные плейсхолдеры.
+  </p>
+</div>
+
+<!-- pixel -->
+<div class="scene" data-scene="pixel">
+  <div class="scene-stage pixel-stage">
+    <div class="scene-inner">
+      <div class="pixel-card">
+        <div class="node-label">Pixel masking</div>
+        <h3>Персональные данные распадаются на безопасные токены</h3>
+        <pre>Иван Петров  <span class="pixel-redacted"></span>  [Person_1]
++7 999 123-45-67  <span class="pixel-redacted"></span>  [Phone_1]
+test@company.ru  <span class="pixel-redacted"></span>  [Email_1]</pre>
+      </div>
+      <div class="pixel-grid" aria-hidden="true">
+        {Array.from({ length: 36 }).map(() => <span class="px" />)}
+      </div>
+    </div>
+  </div>
+  <p class="scene-caption">Самый заметный креатив: данные визуально пикселизируются перед выходом из контура.</p>
+</div>
+
+<!-- stream -->
+<div class="scene" data-scene="stream">
+  <div class="scene-stage stream-stage">
+    <div class="scene-inner">
+      <div class="stream-card" style="background: rgba(16, 27, 45, 0.82); color: white; border-color: #26364d;">
+        <div class="node-label">Encrypted data stream</div>
+        <h3>Запрос и RAG-контекст проходят через pipeline защиты</h3>
+        <div class="stream-lines">
+          <div class="stream-line">detect.entities(<span class="stream-token">person</span>, phone, email, contract_id)</div>
+          <div class="stream-line">mask.map: Иван Петров → <span class="stream-token">[Person_1]</span></div>
+          <div class="stream-line">route.to.llm: payload=<span class="stream-token">safe_context_only</span></div>
+          <div class="stream-line">restore.inside.neurokey(response, masking_map)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="scene-caption">Больше подходит для API/product teams: выглядит как инфраструктура и data pipeline.</p>
+</div>
+
+<!-- twin -->
+<div class="scene" data-scene="twin">
+  <div class="scene-stage twin-stage">
+    <div class="scene-inner">
+      <div class="twin-split">
+        <div class="twin-card">
+          <div class="node-label">Real world</div>
+          <h3>Иван Петров</h3>
+          <p class="muted">+7 999 123-45-67<br />test@company.ru</p>
+          <p>Остаётся внутри Нейроключа.</p>
+        </div>
+        <div class="twin-card safe">
+          <div class="node-label">AI-safe twin</div>
+          <h3>[Person_1]</h3>
+          <p class="muted">[Phone_1]<br />[Email_1]</p>
+          <p>С этой версией работает внешняя LLM.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="scene-caption">Самая простая бизнес-метафора: у реальных данных появляется безопасный двойник.</p>
+</div>
+
+<!-- document -->
+<div class="scene" data-scene="document">
+  <div class="scene-stage doc-stage">
+    <div class="scene-inner">
+      <div class="document-ui">
+        <div class="doc-card">
+          <div class="node-label">Документ / тикет / договор</div>
+          <h3>Составь саммари по обращению клиента <span class="highlight">Анны Смирновой</span></h3>
+          <div class="doc-line" style="width: 92%;"></div>
+          <div class="doc-line" style="width: 76%;"></div>
+          <p>Телефон: <span class="highlight">+7 999 123-45-67</span></p>
+          <p>Договор: <span class="highlight">NK-4821</span></p>
+        </div>
+        <div class="glass-card">
+          <div class="node-label">Найдено 3 сущности</div>
+          <h3>Действие: замаскировать</h3>
+          <div style="margin-top: 18px;">
+            <span class="mask-chip">[Person_1]</span>
+            <span class="mask-chip">[Phone_1]</span>
+            <span class="mask-chip">[Contract_1]</span>
+          </div>
+          <p class="muted">Внешняя LLM получает безопасную версию документа.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="scene-caption">Лучше всего для поддержки, документооборота и вторичных HR-сценариев: сразу видно прикладной процесс.</p>
+</div>
+
+<!-- chat -->
+<div class="scene" data-scene="chat">
+  <div class="scene-stage chat-stage">
+    <div class="scene-inner">
+      <div class="chat-demo">
+        <div class="chat-phone">
+          <div class="chat-top">
+            <span>Чат Нейроключа</span>
+            <span>НейроМаск включён</span>
+          </div>
+          <div class="bubble user">
+            Сделай саммари обращения клиента, найди причину проблемы и подготовь черновик ответа.
+            <div class="file-chip">ticket_4821.pdf</div>
+          </div>
+          <div class="bubble bot">
+            Принял документ. Перед отправкой во внешнюю LLM проверю и скрою чувствительные данные.
+          </div>
+          <div class="bubble bot">
+            Готово: проблема связана с задержкой поставки. В ответе предложен статус заказа и следующий шаг для клиента.
+          </div>
+        </div>
+        <div class="process-panel">
+          <div class="node-label">Пошаговый сценарий</div>
+          <h3>Документ и промпт проходят через НейроМаск</h3>
+          <div class="process-steps" style="margin-top: 16px;">
+            <div class="process-step">
+              <div class="step-index">1</div>
+              <div class="step-copy"><strong>Пользователь отправляет документ</strong><span>Обращение клиента + задача в чате Нейроключа</span></div>
+              <div class="step-state">input</div>
+            </div>
+            <div class="process-step">
+              <div class="step-index">2</div>
+              <div class="step-copy"><strong>НейроМаск находит персональные данные</strong><span>Имя клиента, телефон, email, номер договора</span></div>
+              <div class="step-state">detect</div>
+            </div>
+            <div class="process-step">
+              <div class="step-index">3</div>
+              <div class="step-copy"><strong>Данные маскируются</strong><span>[Person_1], [Phone_1], [Contract_1]</span></div>
+              <div class="step-state">mask</div>
+            </div>
+            <div class="process-step">
+              <div class="step-index">4</div>
+              <div class="step-copy"><strong>LLM получает безопасный запрос</strong><span>Смысл и контекст сохранены</span></div>
+              <div class="step-state">LLM</div>
+            </div>
+            <div class="process-step">
+              <div class="step-index">5</div>
+              <div class="step-copy"><strong>Ответ восстанавливается</strong><span>Финальный результат возвращается в чат</span></div>
+              <div class="step-state">done</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="scene-caption">Самая продуктовая концепция: живой сценарий в чате с документом, маскированием и ответом.</p>
+</div>

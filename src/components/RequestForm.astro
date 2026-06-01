@@ -1,0 +1,41 @@
+---
+// Блок 3 — заявка / сбор инпутов (форма, что была в старом блоке).
+import RequestForm from './islands/RequestForm.tsx';
+
+const includes = [
+  'сценарий и типы данных;',
+  'карта правил: mask / block / allow;',
+  'требования к контуру;',
+  'следующий безопасный шаг.',
+];
+---
+
+<section class="section" id="request">
+  <div class="cta-split">
+    <div class="cta-copy">
+      <span class="aj-chip">V</span>
+      <h2>
+        <span class="aj-mark aj-mark-value" data-aj="V">Обсудим безопасный запуск LLM</span> на ваших
+        данных
+      </h2>
+      <p>
+        Расскажите, с какими документами, сканами, договорами, тикетами или обращениями вы хотите
+        работать через внешние API-модели. Мы подберем формат подключения и правила маскирования.
+      </p>
+
+      <strong>Что входит в первый разбор</strong>
+      <ul>
+        {
+          includes.map((i) => (
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+              <span>{i}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <RequestForm client:load />
+  </div>
+</section>

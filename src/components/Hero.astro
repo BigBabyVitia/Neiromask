@@ -1,0 +1,39 @@
+---
+const chips = [
+  '152-ФЗ',
+  'внешние LLM по API',
+  'облако от 45 000 ₽/мес',
+  'документы и сканы',
+  'быстрая интеграция',
+];
+---
+
+<section class="section pt-20" id="top">
+  <div class="mx-auto flex max-w-[860px] flex-col items-center text-center">
+    <div class="mb-7 flex flex-wrap justify-center gap-2">
+      {chips.map((c) => <span class="chip">{c}</span>)}
+    </div>
+
+    <h1 class="hero-h1">
+      <span class="aj-mark aj-mark-big" data-aj="B">Маскирование персональных данных</span> для
+      <span class="aj-mark aj-mark-value" data-aj="V">LLM по API</span>
+    </h1>
+
+    <p class="mx-auto mt-6 max-w-[620px] text-[19px] text-muted">
+      НейроМаск скрывает ФИО, телефоны, паспорта и реквизиты до отправки во внешнюю API-модель,
+      сохраняет смысл запроса и возвращает восстановленный ответ в контур Нейроключа.
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a class="btn btn--round" href="#request">Разобрать сценарий</a>
+    </div>
+
+    <div class="aj-legend justify-center" aria-label="Внутренняя разметка ценности">
+      <span class="aj-legend-item"><span class="aj-key">B</span> большая работа</span>
+      <span class="aj-legend-item"><span class="aj-key s">S</span> вспомогательная работа</span>
+      <span class="aj-legend-item"><span class="aj-key v">V</span> ценность / outcome</span>
+      <span class="aj-legend-item"><span class="aj-key p">P</span> proof / enablement</span>
+      <span class="aj-legend-item"><span class="aj-key a">A</span> боль / тревога</span>
+    </div>
+  </div>
+</section>

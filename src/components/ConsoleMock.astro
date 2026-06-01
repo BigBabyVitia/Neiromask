@@ -1,0 +1,62 @@
+---
+// Блок 2 — мок «Интерфейс НейроМаск» (был внутри старого CTA-блока).
+const meters: [string, string][] = [
+  ['18', 'найдено персональных данных'],
+  ['12', 'замаскировано'],
+  ['2', 'заблокировано'],
+];
+
+const rules: [string, 'mask' | 'block' | 'allow'][] = [
+  ['ФИО, телефон, email', 'mask'],
+  ['Паспортные данные', 'block'],
+  ['Номер договора', 'mask'],
+  ['Тип документа', 'allow'],
+];
+---
+
+<section class="section" id="console">
+  <div class="section-head">
+    <span class="aj-chip">P</span>
+    <h2>Интерфейс НейроМаск</h2>
+    <p>
+      Панель для ИБ и владельца сценария: какие сущности найдены, какое правило применено и что ушло
+      во внешнюю API-модель.
+    </p>
+  </div>
+
+  <div class="console-mock" aria-label="Интерфейс системы маскирования">
+    <div class="console-topbar">
+      <div class="traffic-lights" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div class="interface-title">НейроМаск · разбор сценария</div>
+      <div class="interface-badge">журнал</div>
+    </div>
+
+    <div class="console-body">
+      <div class="entity-meter">
+        {
+          meters.map(([n, label]) => (
+            <div class="meter">
+              <strong>{n}</strong>
+              <span>{label}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="rule-list">
+        {
+          rules.map(([label, action]) => (
+            <div class="rule">
+              <span>{label}</span>
+              <span class={`rule-action ${action === 'mask' ? '' : action}`}>{action}</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

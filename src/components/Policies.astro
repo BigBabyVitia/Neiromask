@@ -1,0 +1,93 @@
+---
+import SilkBg from './SilkBg.astro';
+
+const cardBase = `
+    <rect x="28" y="10" width="150" height="110" rx="16" fill="#ffffff" stroke="#ece8df"/>
+    <rect x="12" y="22" width="150" height="110" rx="16" fill="#ffffff" stroke="#e3ddd2"/>
+    <circle cx="30" cy="44" r="4.5" fill="#cfc9bd"/>
+    <rect x="43" y="40" width="56" height="8" rx="4" fill="#ece8df"/>
+    <rect x="28" y="66" width="114" height="9" rx="4.5" fill="#ebe7de"/>`;
+
+const icons = {
+  mask: `<svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${cardBase}
+    <rect x="22" y="90" width="130" height="20" rx="10" fill="#f3f1eb" stroke="#e7e2d8"/>
+    <rect x="31" y="96" width="30" height="8" rx="4" fill="#c4beb1"/>
+    <rect x="67" y="96" width="18" height="8" rx="4" fill="#d8d4cb"/>
+    <rect x="91" y="96" width="44" height="8" rx="4" fill="#c4beb1"/>
+    <g transform="translate(154 116)">
+      <circle r="27" fill="#b6afa2"/>
+      <path d="M0 -14 l12.5 5.5 v8.3 c0 8 -5.5 12.9 -12.5 16 c-7 -3.1 -12.5 -8 -12.5 -16 v-8.3 z" fill="#ffffff"/>
+      <path d="M-5.3 0 l4 4 L6.3 -5.3" stroke="#b6afa2" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </svg>`,
+  block: `<svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${cardBase}
+    <rect x="28" y="90" width="84" height="9" rx="4.5" fill="#ebe7de"/>
+    <g transform="translate(154 116)">
+      <circle r="27" fill="#b6afa2"/>
+      <path d="M-9 -4 v-6 a9 9 0 0 1 18 0 v6" fill="none" stroke="#ffffff" stroke-width="4"/>
+      <rect x="-14" y="-4" width="28" height="21" rx="5.5" fill="#ffffff"/>
+      <circle cx="0" cy="4.5" r="3" fill="#b6afa2"/>
+      <rect x="-1.6" y="5" width="3.2" height="6.6" rx="1.6" fill="#b6afa2"/>
+    </g>
+  </svg>`,
+  allow: `<svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${cardBase}
+    <rect x="28" y="90" width="84" height="9" rx="4.5" fill="#ebe7de"/>
+    <g transform="translate(154 116)">
+      <circle r="27" fill="#b6afa2"/>
+      <path d="M-11 0 l7.5 8.7 L14 -10" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </svg>`,
+};
+
+const policies = [
+  {
+    cls: 'mask',
+    title: 'Маскирование',
+    text: 'Чувствительные данные заменяются на плейсхолдеры до отправки во внешнюю модель.',
+    mock: 'Иванов И.И. → [Person_1]',
+  },
+  {
+    cls: 'block',
+    title: 'Блокировка',
+    text: 'Если сценарий или тип данных не подходит под правила компании, запрос не уходит наружу.',
+    mock: 'Полный текст НДА → заблокировано',
+  },
+  {
+    cls: 'allow',
+    title: 'Разрешение',
+    text: 'Низкорисковые запросы проходят без лишней бюрократии, но событие остаётся в журнале.',
+    mock: 'Общий бизнес-вопрос → пропущено',
+  },
+];
+---
+
+<section class="section aj-proof">
+  <div class="section-head">
+    <span class="aj-chip">P</span>
+    <h2>Три действия с запросом</h2>
+    <p>НейроМаск не просто «ищет персональные данные». Он применяет понятное правило к конкретному сценарию, роли и типу данных.</p>
+  </div>
+
+  <div class="policy-cards">
+    {
+      policies.map((p) => (
+        <article class={`policy-card ${p.cls}`}>
+          <div class="policy-stage silk-grad">
+            <SilkBg />
+            <div class="policy-art" set:html={icons[p.cls]} />
+          </div>
+          <div class="policy-body">
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            <div class="mock-line">{p.mock}</div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="aj-note">
+    <span class="aj-key p">P</span>
+    <span><strong>Proof для ИБ:</strong> вместо ручного запрета появляется проверяемый набор правил mask / block / allow.</span>
+  </div>
+</section>

@@ -1,0 +1,216 @@
+---
+const features = [
+  {
+    icon: 'shield',
+    title: 'Маскирование персональных данных',
+    text: 'ФИО, телефоны, email, ИНН, паспортные данные, адреса, реквизиты и другие сущности находятся и закрываются плейсхолдерами до выхода за периметр.',
+    k: 'V',
+    note: 'закрывает риск передачи исходных персональных данных',
+  },
+  {
+    icon: 'undo',
+    title: 'Восстановление ответа',
+    text: 'Возвращает реальные данные в финальный ответ внутри доверенного контура Нейроключа — пользователь видит полезный результат, а не плейсхолдеры.',
+    k: 'V',
+    note: 'сохраняет полезность ответа для пользователя',
+  },
+  {
+    icon: 'sliders',
+    title: 'Политики обработки',
+    text: 'Разрешить, замаскировать или заблокировать запрос по правилам компании. ИБ настраивает сценарии один раз, дальше всё работает автоматически.',
+    k: 'P',
+    note: 'даёт ИБ управляемость, а не ручной контроль',
+  },
+  {
+    icon: 'doc',
+    title: 'RAG-контекст и агенты',
+    text: 'Защищает не только запрос пользователя, но и контекст из документов и бизнес-систем, который подмешивается в промпт.',
+    k: 'B',
+    note: 'отстройка от простого LLM-proxy',
+  },
+  {
+    icon: 'journal',
+    title: 'Журнал обработки',
+    text: 'Показывает, какие данные были найдены и какое действие применено к каждому событию — готовый материал для аудита.',
+    k: 'P',
+    note: 'помогает отвечать на аудит и вопросы CISO',
+  },
+  {
+    icon: 'api',
+    title: 'API для интеграций',
+    text: 'Позволяет подключать маскирование к внутренним сервисам и AI-сценариям без переписывания существующих процессов.',
+    k: 'S',
+    note: 'ускоряет внедрение в существующие процессы',
+  },
+];
+
+const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase()}`);
+---
+
+<section class="band" id="features">
+  <div class="section aj-proof">
+    <div class="section-head">
+      <span class="aj-chip">P</span>
+      <h2>Возможности НейроМаск</h2>
+      <p>Управляемый слой безопасности для ИИ-сценариев: маскирование, восстановление, политики и интеграции.</p>
+    </div>
+
+    <div class="cap-layout">
+      {/* ---- Left: clickable accordion of capabilities ---- */}
+      <ul class="cap-list">
+        {
+          features.map((f, i) => (
+            <li class={`cap-item${i === 0 ? ' is-active' : ''}`} data-cap={i}>
+              <button
+                class="cap-trigger"
+                type="button"
+                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-controls={`cap-panel-${i}`}
+              >
+                <span class="cap-title">{f.title}</span>
+                <span class="cap-chevron" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+                </span>
+              </button>
+
+              <div class="cap-panel" id={`cap-panel-${i}`} role="region">
+                <div class="cap-panel-inner">
+                  <p class="cap-text">{f.text}</p>
+                  <div class="aj-note">
+                    <span class={keyClass(f.k)}>{f.k}</span>
+                    <span>{f.note}</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      {/* ---- Right: minimal preview atoms, crossfade per active item ---- */}
+      <div class="cap-media">
+        <div class="cap-media-frame">
+          {
+            features.map((f, i) => (
+              <figure class={`cap-shot${i === 0 ? ' is-active' : ''}`} data-cap={i}>
+                <div class="cap-ph" aria-hidden="true" />
+                <div class="cap-atom" aria-hidden="true">
+                  {f.icon === 'shield' && (
+                    <div class="atom">
+                      <span class="atom-cap">До отправки в модель</span>
+                      <div class="atom-card">
+                        <div class="atom-line">
+                          Договор с <span class="atom-chip atom-chip--src">Ивановым И.И.</span>, тел. <span class="atom-chip atom-chip--src">+7 999 123-45-67</span>
+                        </div>
+                      </div>
+                      <span class="atom-arrow">↓</span>
+                      <div class="atom-card">
+                        <div class="atom-line">
+                          Договор с <span class="atom-chip atom-chip--mask">[ФИО]</span>, тел. <span class="atom-chip atom-chip--mask">[ТЕЛЕФОН]</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {f.icon === 'undo' && (
+                    <div class="atom">
+                      <span class="atom-cap">Ответ модели</span>
+                      <div class="atom-card">
+                        <div class="atom-line atom-muted">
+                          Клиент <span class="atom-chip atom-chip--mask">[ФИО]</span> оплатил счёт <span class="atom-chip atom-chip--mask">[СЧЁТ]</span>
+                        </div>
+                      </div>
+                      <span class="atom-arrow">↺&nbsp; восстановление в контуре</span>
+                      <div class="atom-card">
+                        <div class="atom-line">
+                          Клиент <span class="atom-chip atom-chip--val">Иванов И.И.</span> оплатил счёт <span class="atom-chip atom-chip--val">№ 4471</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {f.icon === 'sliders' && (
+                    <div class="atom">
+                      <div class="atom-card atom-pol">
+                        <div class="atom-pol-row">
+                          <span class="atom-pol-name">Имя клиента</span>
+                          <span class="atom-state"><span class="atom-dot atom-dot--allow" />Разрешить</span>
+                        </div>
+                        <div class="atom-pol-row">
+                          <span class="atom-pol-name">Email, телефон</span>
+                          <span class="atom-state"><span class="atom-dot atom-dot--mask" />Маскировать</span>
+                        </div>
+                        <div class="atom-pol-row">
+                          <span class="atom-pol-name">Реквизиты карты</span>
+                          <span class="atom-state"><span class="atom-dot atom-dot--block" />Заблокировать</span>
+                        </div>
+                      </div>
+                      <span class="atom-cap">Правила ИБ · применяются автоматически</span>
+                    </div>
+                  )}
+
+                  {f.icon === 'doc' && (
+                    <div class="atom">
+                      <div class="atom-docs">
+                        <span class="atom-doc"><svg class="atom-doc-i" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z" /><path d="M14 2v4h4" /></svg>Договор.pdf</span>
+                        <span class="atom-doc"><svg class="atom-doc-i" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z" /><path d="M14 2v4h4" /></svg>CRM</span>
+                        <span class="atom-doc"><svg class="atom-doc-i" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z" /><path d="M14 2v4h4" /></svg>База знаний</span>
+                      </div>
+                      <span class="atom-arrow">↓&nbsp; защищённый контекст</span>
+                      <div class="atom-prompt">Промпт к модели</div>
+                    </div>
+                  )}
+
+                  {f.icon === 'journal' && (
+                    <div class="atom">
+                      <div class="atom-card atom-log">
+                        <div class="atom-log-row"><span class="atom-log-time">12:03</span><span>ФИО</span><span class="atom-badge atom-badge--mask">маскировано</span></div>
+                        <div class="atom-log-row"><span class="atom-log-time">12:03</span><span>Телефон</span><span class="atom-badge atom-badge--mask">маскировано</span></div>
+                        <div class="atom-log-row"><span class="atom-log-time">12:04</span><span>Реквизиты</span><span class="atom-badge atom-badge--block">блокировано</span></div>
+                      </div>
+                      <span class="atom-cap">Готовый материал для аудита</span>
+                    </div>
+                  )}
+
+                  {f.icon === 'api' && (
+                    <div class="atom">
+                      <div class="atom-card atom-code">
+                        <div><span class="atom-code-m">POST</span> /v1/mask</div>
+                        <div class="atom-muted">{'{ "text": "…", "policy": "default" }'}</div>
+                        <div class="atom-code-res">200 · OK</div>
+                      </div>
+                      <span class="atom-cap">Подключение без переписывания процессов</span>
+                    </div>
+                  )}
+                </div>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Capabilities accordion: click a left item → expand it, collapse the rest,
+  // crossfade the matching media on the right. Single-open (tab-like) behaviour.
+  const root = document.querySelector<HTMLElement>('#features');
+  if (root) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('.cap-item'));
+    const shots = Array.from(root.querySelectorAll<HTMLElement>('.cap-shot'));
+
+    const activate = (idx: number) => {
+      items.forEach((item, i) => {
+        const on = i === idx;
+        item.classList.toggle('is-active', on);
+        item.querySelector('.cap-trigger')?.setAttribute('aria-expanded', String(on));
+      });
+      shots.forEach((shot, i) => shot.classList.toggle('is-active', i === idx));
+    };
+
+    items.forEach((item, i) => {
+      item.querySelector('.cap-trigger')?.addEventListener('click', () => activate(i));
+    });
+  }
+</script>

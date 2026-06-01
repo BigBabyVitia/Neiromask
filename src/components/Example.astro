@@ -1,0 +1,335 @@
+---
+// Example — заголовок в 2 строки, свитч маскирования в конце 2-й строки.
+// Эффект: несколько вертикальных колонок ПДн, бегущих друг мимо друга
+// (соседние в разные стороны). Свитч переключает сырые данные ↔ плейсхолдеры
+// с морф-анимацией (cross-fade + blur) у каждого токена.
+// Безопасный/маскированный акцент — синий, сырые ПДн — красный.
+
+type Pii = { type: string; raw: string; mask: string };
+
+const columns: Pii[][] = [
+  [
+    { type: 'ФИО', raw: 'Анна Смирнова', mask: '[Person_1]' },
+    { type: 'Телефон', raw: '+7 999 123-45-67', mask: '[Phone_1]' },
+    { type: 'Паспорт', raw: '4510 №123456', mask: '[Passport_1]' },
+    { type: 'Email', raw: 'a.smirnova@firma.ru', mask: '[Email_1]' },
+    { type: 'Карта', raw: '4276 •••• 8821', mask: '[Card_1]' },
+    { type: 'СНИЛС', raw: '112-233-445 95', mask: '[SNILS_1]' },
+  ],
+  [
+    { type: 'ФИО', raw: 'Иван Петров', mask: '[Person_2]' },
+    { type: 'Телефон', raw: '+7 921 555-10-20', mask: '[Phone_2]' },
+    { type: 'ИНН', raw: '7701 123456', mask: '[INN_1]' },
+    { type: 'Email', raw: 'i.petrov@mail.ru', mask: '[Email_2]' },
+    { type: 'Адрес', raw: 'ул. Ленина, 14', mask: '[Address_1]' },
+    { type: 'Договор', raw: '№ NK-4821', mask: '[Contract_1]' },
+  ],
+  [
+    { type: 'ФИО', raw: 'Ольга Кузнецова', mask: '[Person_3]' },
+    { type: 'Паспорт', raw: '4012 №998877', mask: '[Passport_2]' },
+    { type: 'Карта', raw: '5536 •••• 1043', mask: '[Card_2]' },
+    { type: 'Дата рожд.', raw: '12.04.1990', mask: '[DOB_1]' },
+    { type: 'Телефон', raw: '+7 905 777-88-99', mask: '[Phone_3]' },
+    { type: 'Адрес', raw: 'пр. Мира, 7-12', mask: '[Address_2]' },
+  ],
+  [
+    { type: 'ФИО', raw: 'Дмитрий Орлов', mask: '[Person_4]' },
+    { type: 'Email', raw: 'd.orlov@corp.ru', mask: '[Email_3]' },
+    { type: 'Паспорт', raw: '4509 №445566', mask: '[Passport_3]' },
+    { type: 'Договор', raw: '№ NK-5190', mask: '[Contract_2]' },
+    { type: 'СНИЛС', raw: '987-654-321 00', mask: '[SNILS_2]' },
+    { type: 'Карта', raw: '4081 •••• 7765', mask: '[Card_3]' },
+  ],
+  [
+    { type: 'ФИО', raw: 'Мария Лебедева', mask: '[Person_5]' },
+    { type: 'Телефон', raw: '+7 916 220-11-33', mask: '[Phone_4]' },
+    { type: 'ИНН', raw: '5004 998812', mask: '[INN_2]' },
+    { type: 'Дата рожд.', raw: '03.11.1985', mask: '[DOB_2]' },
+    { type: 'Адрес', raw: 'ул. Садовая, 3', mask: '[Address_3]' },
+    { type: 'Договор', raw: '№ NK-6042', mask: '[Contract_3]' },
+  ],
+];
+---
+
+<section class="section aj-big" id="example">
+  <div class="section-head">
+    <span class="aj-chip">B</span>
+    <h2 class="ex-head">
+      <span class="aj-mark aj-mark-value" data-aj="V">Смысл документов сохраняется</span>.<br />
+      <span class="ex-head-row">
+        <span class="aj-mark aj-mark-big" data-aj="B">Персональные данные скрыты</span>
+        <label class="ex-switch" title="Маскирование персональных данных">
+          <input type="checkbox" checked data-ex-toggle aria-label="Маскирование персональных данных" />
+          <span class="ex-track"><span class="ex-thumb"></span></span>
+        </label>
+      </span>
+    </h2>
+    <p>
+      Пример для договоров и сканов: внешняя модель получает задачу и структуру документа, но не
+      видит реальные персональные данные и номера.
+    </p>
+  </div>
+
+  <div class="ex-stage">
+    <div class="ex-stream is-masked" data-ex-stream aria-hidden="true">
+    {
+      columns.map((items, ci) => (
+        <div class="ex-col">
+          <div class="ex-col-track" style={`--dur:${20 + ci * 3}s`}>
+            {[0, 1].map(() =>
+              items.map((c) => (
+                <div class="ex-chip">
+                  <span class="pii">
+                    <span class="raw">{c.raw}</span>
+                    <span class="mask">{c.mask}</span>
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      ))
+    }
+    </div>
+  </div>
+
+  <div class="aj-note">
+    <span class="aj-key v">V</span>
+    <span
+      ><strong>Ценность для бизнеса:</strong> можно анализировать пачки документов и сканов без ручной
+      деперсонализации каждого файла. Карта восстановления хранится внутри контура Нейроключа.</span
+    >
+  </div>
+</section>
+
+<style>
+  /* заголовок: свитч в конце второй строки */
+  .ex-head-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .ex-switch {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    flex: none;
+    vertical-align: middle;
+  }
+  .ex-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ex-track {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-muted, #6f675c) 32%, transparent);
+    transition: background 0.3s ease;
+    flex: none;
+  }
+  .ex-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s cubic-bezier(0.4, 0.1, 0.2, 1.4);
+  }
+  .ex-switch input:checked ~ .ex-track {
+    background: #1e50d6;
+  }
+  .ex-switch input:checked ~ .ex-track .ex-thumb {
+    transform: translateX(22px);
+  }
+  .ex-switch input:focus-visible ~ .ex-track {
+    outline: 2px solid var(--color-ink, #1c1813);
+    outline-offset: 2px;
+  }
+
+  /* поток колонок */
+  .ex-stream {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    height: 380px;
+    margin: 36px auto 0;
+    max-width: 1000px;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #0000, #000 16% 84%, #0000);
+    mask-image: linear-gradient(180deg, #0000, #000 16% 84%, #0000);
+  }
+  .ex-col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 200px;
+    overflow: visible;
+  }
+  /* серый дивайдер между колонками */
+  .ex-col + .ex-col {
+    border-left: 1px solid color-mix(in srgb, var(--color-line, #e7e2d8) 50%, transparent);
+    padding-left: 16px;
+  }
+  .ex-col-track {
+    display: flex;
+    flex-flow: column;
+    gap: 14px;
+    animation: ex-scroll var(--dur, 24s) linear infinite;
+    will-change: transform;
+  }
+  .ex-col:nth-child(even) .ex-col-track {
+    animation-direction: reverse;
+  }
+  @keyframes ex-scroll {
+    to {
+      transform: translateY(-50%);
+    }
+  }
+  @media (hover: hover) {
+    .ex-stream:hover .ex-col-track {
+      animation-play-state: paused;
+    }
+  }
+
+  /* чип данных */
+  .ex-chip {
+    flex: none;
+    padding: 4px 2px;
+  }
+
+  /* токен: два слоя в одной грид-ячейке → ширина = max, без сдвигов */
+  .pii {
+    display: inline-grid;
+    font-family: var(--font-mono, ui-monospace, Menlo, monospace);
+    font-size: 13px;
+    font-weight: 600;
+    min-width: 0;
+  }
+  .pii > span {
+    grid-area: 1 / 1;
+    justify-self: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    transition: opacity 0.45s ease, filter 0.45s ease, transform 0.45s ease;
+  }
+  /* сырые ПДн — приглушённый красный (опасность) */
+  .pii .raw {
+    color: #bf5249;
+  }
+  /* зашифровано — плейсхолдер тонкой серой строкой (видно, во что маскируется) */
+  .pii .mask {
+    color: #8a8276;
+    font-weight: 500;
+  }
+
+  /* состояние: маскировано (по умолчанию) */
+  .ex-stream.is-masked .pii .raw {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.99);
+  }
+  .ex-stream.is-masked .pii .mask {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  /* состояние: раскрыто */
+  .ex-stream:not(.is-masked) .pii .raw {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  .ex-stream:not(.is-masked) .pii .mask {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.99);
+  }
+  .ex-stage {
+    position: relative;
+  }
+  .ex-stream {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 860px) {
+    .ex-col:nth-child(n + 4) {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .ex-col:nth-child(n + 3) {
+      display: none;
+    }
+    .ex-stream {
+      height: 320px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ex-col-track {
+      animation: none;
+    }
+    .pii > span {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
+<script>
+  function initExampleStream() {
+    const stream = document.querySelector<HTMLElement>('[data-ex-stream]');
+    const toggle = document.querySelector<HTMLInputElement>('[data-ex-toggle]');
+    if (!stream || !toggle || stream.dataset.exInit) return;
+    stream.dataset.exInit = '1';
+
+    const sync = () => stream.classList.toggle('is-masked', toggle.checked);
+
+    // авто-переключение: раз в ~3.6с, только пока блок на экране
+    let timer: ReturnType<typeof setInterval> | null = null;
+    let visible = false;
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+    const start = () => {
+      if (timer || !visible) return;
+      timer = setInterval(() => {
+        toggle.checked = !toggle.checked;
+        sync();
+      }, 5000);
+    };
+
+    // ручной клик — сразу применяем и перезапускаем таймер (даём полный интервал)
+    toggle.addEventListener('change', () => {
+      sync();
+      stop();
+      start();
+    });
+
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          visible = e.isIntersecting;
+          if (visible) start();
+          else stop();
+        }),
+      { threshold: 0.25 }
+    );
+    io.observe(stream);
+
+    sync();
+  }
+
+  initExampleStream();
+  document.addEventListener('astro:page-load', initExampleStream);
+</script>
