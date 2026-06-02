@@ -1,357 +1,335 @@
 ---
-const cloud = [
-  'быстрый запуск;',
-  'доступ к сильным моделям;',
-  'риск передачи персональных данных наружу;',
-  'нет единого аудита и правил.',
+import { t } from '../copy';
+import SilkBg from './SilkBg.astro';
+
+// Блок 1 — что есть на рынке сейчас (два компромиссных пути).
+const market = [
+  {
+    title: 'Незащищённый доступ в облаке',
+    desc: 'Быстрый старт и доступ к сильным моделям — но исходные ФИО, паспорта и реквизиты уходят во внешнюю модель без единого аудита и правил.',
+  },
+  {
+    title: 'Полностью закрытый контур',
+    desc: 'Данные не покидают компанию и контроль максимальный — но инфраструктура дорогая, а путь до production долгий.',
+  },
 ];
-const onprem = [
-  'данные остаются внутри компании;',
-  'высокий уровень контроля;',
-  'дорогая инфраструктура;',
-  'долгий путь до production.',
+
+// Блок 2 — что предлагаем мы.
+const offer = [
+  {
+    title: 'Маскируем ПДн до выхода в API',
+    desc: 'ФИО, телефоны, паспорта и реквизиты заменяются плейсхолдерами до отправки во внешнюю модель.',
+  },
+  {
+    title: 'Восстанавливаем ответ внутри контура',
+    desc: 'Реальные значения подставляются обратно в контуре Нейроключа — пользователь видит готовый результат, а не плейсхолдеры.',
+  },
+  {
+    title: 'Единый аудит и правила обработки',
+    desc: 'Кто отправил, какие сущности найдены и какое действие применено — всё фиксируется и доступно для аудита.',
+  },
 ];
 ---
 
-<section class="section aj-small">
-  <div class="section-head">
-    <span class="aj-chip">S</span>
-    <h2>Третий путь между облаком и on-prem</h2>
-    <p>
-      НейроМаск позволяет использовать качество внешних API-моделей, но не передавать им исходные
-      персональные и чувствительные данные.
-    </p>
-  </div>
+{/* ── Блок 1: что есть на рынке (шашечка: текст справа / визуал слева) ── */}
+<section class="section aj-small" id="tp-market">
+  <div class="needs-split rev">
+    <div class="needs-col">
+      <div class="needs-head">
+        <h2 class="needs-title">Что есть на рынке сейчас</h2>
+      </div>
 
-  <div class="cards-2">
-    <article class="choice-card">
-      <h3>Незащищённый доступ в облаке</h3>
-      <ul>{cloud.map((i) => <li>{i}</li>)}</ul>
-    </article>
-    <article class="choice-card">
-      <h3>Полностью закрытый контур</h3>
-      <ul>{onprem.map((i) => <li>{i}</li>)}</ul>
-    </article>
-  </div>
-
-  <div class="nm-showcase">
-    <div class="nm-showcase-text">
-      <h3>НейроМаск</h3>
-      <p>
-        <span class="aj-mark aj-mark-value" data-aj="V">Сильные внешние LLM по API + защищённый контур</span> для запроса, документов и ответа.
-      </p>
-      <ul class="nm-features">
-        <li>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
-          <span>Скрытие персональных данных на лету</span>
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
-          <span>Подробный аудит всех запросов к LLM</span>
-        </li>
-        <li>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
-          <span>Использование передовых моделей без риска</span>
-        </li>
+      <ul class="needs-list">
+        {
+          market.map((p, i) => (
+            <li class={`needs-item${i === 0 ? ' is-active' : ''}`} data-needs={i}>
+              <span class="needs-progress" aria-hidden="true" />
+              <strong class="needs-item__title">{p.title}</strong>
+              <div class="needs-item__panel">
+                <p class="needs-item__desc">{p.desc}</p>
+              </div>
+            </li>
+          ))
+        }
       </ul>
     </div>
-    
-    <div class="nm-showcase-diagram">
-      <div class="nm-infrastructure">
-        <span class="nm-infra-label">Ваша инфраструктура</span>
-        
-        <div class="nm-node nm-app">
-          <div class="nm-node-title">Бизнес-приложение</div>
-          <div class="nm-node-desc">или внутренний портал</div>
-        </div>
 
-        <div class="nm-flow-vertical">
-          <div class="nm-v-arrow nm-v-down"></div>
-          <div class="nm-v-arrow nm-v-up"></div>
+    <div class="needs-visual silk-grad">
+      <SilkBg />
+      {/* Две рыночные крайности: облако с риском или дорогой on-prem. */}
+      <div class="tp-diagram tp-diagram--options" aria-hidden="true">
+        <div class="nm-node nm-node--warn">
+          <div class="nm-node-title">Облако как есть</div>
+          <div class="nm-node-desc">ПДн уходят наружу</div>
         </div>
-
-        <div class="nm-node nm-node-center aurora-grad">
-          <div class="nm-node-title">НейроМаск</div>
-          <div class="nm-node-desc">Анонимизация и контроль</div>
+        <span class="tp-or">или</span>
+        <div class="nm-node">
+          <div class="nm-node-title">Полный on-prem</div>
+          <div class="nm-node-desc">дорого и долго</div>
         </div>
-      </div>
-      
-      <div class="nm-flow-horizontal">
-        <div class="nm-h-arrow nm-h-right"></div>
-        <div class="nm-h-arrow nm-h-left"></div>
-      </div>
-
-      <div class="nm-node nm-cloud">
-        <div class="nm-node-title">Облачные LLM</div>
-        <div class="nm-node-desc">OpenAI, Anthropic, Yandex...</div>
       </div>
     </div>
   </div>
+</section>
 
-  <style>
-    .nm-showcase {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 2.5rem;
-      margin: 3rem 0;
-      align-items: center;
-      border: 1px solid var(--color-line);
-      background: var(--color-surface);
-      border-radius: 14px;
-      padding: 32px 24px;
-    }
-    
-    @media (max-width: 980px) {
-      .nm-showcase {
-        grid-template-columns: 1fr;
-        padding: 24px;
-        gap: 2.5rem;
-      }
-    }
+{/* ── Блок 2: что предлагаем мы (текст слева / визуал справа) ── */}
+<section class="section aj-small" id="tp-offer">
+  <div class="needs-split">
+    <div class="needs-col">
+      <div class="needs-head">
+        <h2 class="needs-title" data-copy="tp.h2">Что предлагаем мы</h2>
+      </div>
 
-    .nm-showcase-text h3 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0 0 1rem 0;
-      color: var(--color-ink);
-    }
+      <ul class="needs-list">
+        {
+          offer.map((p, i) => (
+            <li class={`needs-item${i === 0 ? ' is-active' : ''}`} data-needs={i}>
+              <span class="needs-progress" aria-hidden="true" />
+              <strong class="needs-item__title">{p.title}</strong>
+              <div class="needs-item__panel">
+                <p class="needs-item__desc">{p.desc}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
-    .nm-showcase-text p {
-      font-size: 1.125rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-      color: var(--color-ink);
-    }
+    <div class="needs-visual silk-grad">
+      <SilkBg />
+      {/* Наш поток: приложение → НейроМаск → облако (восстановление обратно). */}
+      <div class="tp-diagram" aria-hidden="true">
+        <div class="nm-infrastructure">
+          <span class="nm-infra-label">Ваша инфраструктура</span>
+          <div class="nm-node nm-app">
+            <div class="nm-node-title">Бизнес-приложение</div>
+            <div class="nm-node-desc">или внутренний портал</div>
+          </div>
+          <div class="nm-flow">
+            <div class="nm-arrow nm-down" />
+            <div class="nm-arrow nm-up" />
+          </div>
+          <div class="nm-node nm-node-center">
+            <div class="nm-node-title">НейроМаск</div>
+            <div class="nm-node-desc">Анонимизация и контроль</div>
+          </div>
+        </div>
 
-    .nm-features {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
+        <div class="nm-flow">
+          <div class="nm-arrow nm-down" />
+          <div class="nm-arrow nm-up" />
+        </div>
 
-    .nm-features li {
-      display: grid;
-      grid-template-columns: 20px 1fr;
-      gap: 10px;
-      align-items: start;
-      font-size: 0.95rem;
-      color: var(--color-muted);
-      line-height: 1.45;
-    }
-
-    .nm-features svg {
-      width: 20px;
-      height: 20px;
-      margin-top: 1px;
-      fill: none;
-      stroke: var(--color-brand-strong, #163fb8);
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Diagram Complex Layout */
-    .nm-showcase-diagram {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      width: 100%;
-      position: relative;
-    }
-
-    .nm-infrastructure {
-      position: relative;
-      flex: 1.2;
-      border: 1px dashed var(--color-line);
-      border-radius: 16px;
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: color-mix(in srgb, var(--color-bg) 60%, transparent);
-    }
-
-    .nm-infra-label {
-      position: absolute;
-      top: -10px;
-      background: var(--color-surface);
-      padding: 0 10px;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--color-muted);
-      font-family: var(--font-mono);
-    }
-
-    .nm-node {
-      width: 100%;
-      border: 1px solid var(--color-line);
-      background: var(--color-surface);
-      border-radius: 12px;
-      padding: 16px 12px;
-      text-align: center;
-      position: relative;
-      z-index: 2;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    }
-
-    .nm-app {
-      background: var(--color-bg);
-    }
-
-    .nm-cloud {
-      flex: 0.8;
-      margin-left: 10px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-line);
-      height: fit-content;
-      align-self: flex-end; /* Align with NeiroMask inside infrastructure */
-      margin-bottom: 24px;
-    }
-
-    .nm-node-center {
-      border: none;
-      background-color: #163fb8; 
-      color: white;
-      box-shadow: 0 12px 30px rgba(22, 63, 184, 0.2);
-      overflow: hidden;
-      transform: scale(1.03);
-    }
-
-    .nm-node-center .nm-node-title,
-    .nm-node-center .nm-node-desc {
-      color: white;
-      position: relative;
-      z-index: 10; 
-    }
-
-    .nm-node-title {
-      font-weight: 700;
-      font-size: 15px;
-      margin-bottom: 4px;
-      color: var(--color-ink);
-    }
-
-    .nm-node-desc {
-      font-size: 13px;
-      color: var(--color-muted);
-      opacity: 0.9;
-    }
-
-    /* Arrows logic */
-    .nm-flow-vertical {
-      display: flex;
-      gap: 12px;
-      height: 30px;
-      margin: 8px 0;
-    }
-
-    .nm-flow-horizontal {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      width: 40px;
-      align-self: flex-end;
-      margin-bottom: 50px;
-    }
-
-    .nm-v-arrow, .nm-h-arrow {
-      background-color: var(--color-line);
-      position: relative;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .nm-v-arrow { width: 4px; height: 100%; }
-    .nm-h-arrow { height: 4px; width: 100%; }
-
-    /* Moving gradient inside arrows */
-    .nm-v-arrow::before, .nm-h-arrow::before {
-      content: '';
-      position: absolute;
-      background: #163fb8;
-      filter: blur(1px);
-    }
-
-    .nm-v-arrow::before {
-      width: 100%;
-      height: 15px;
-      left: 0;
-    }
-
-    .nm-h-arrow::before {
-      height: 100%;
-      width: 20px;
-      top: 0;
-    }
-
-    .nm-v-down::before {
-      top: 0;
-      animation: slideDown 1.5s infinite linear;
-    }
-    .nm-v-up::before {
-      bottom: 0;
-      animation: slideUp 1.5s infinite linear;
-    }
-    .nm-h-right::before {
-      left: 0;
-      animation: slideRight 1.5s infinite linear;
-    }
-    .nm-h-left::before {
-      right: 0;
-      animation: slideLeft 1.5s infinite linear;
-    }
-
-    /* Arrow heads using CSS borders */
-    .nm-v-down::after { content: ''; position: absolute; bottom: 0; left: -2px; border: 4px solid transparent; border-top-color: var(--color-line); }
-    .nm-v-up::after { content: ''; position: absolute; top: 0; left: -2px; border: 4px solid transparent; border-bottom-color: var(--color-line); }
-    .nm-h-right::after { content: ''; position: absolute; right: 0; top: -2px; border: 4px solid transparent; border-left-color: var(--color-line); }
-    .nm-h-left::after { content: ''; position: absolute; left: 0; top: -2px; border: 4px solid transparent; border-right-color: var(--color-line); }
-
-    @keyframes slideDown { 0% { transform: translateY(-100%); } 100% { transform: translateY(200%); } }
-    @keyframes slideUp { 0% { transform: translateY(200%); } 100% { transform: translateY(-100%); } }
-    @keyframes slideRight { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
-    @keyframes slideLeft { 0% { transform: translateX(200%); } 100% { transform: translateX(-100%); } }
-
-    @media (max-width: 640px) {
-      .nm-showcase-diagram {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .nm-infrastructure {
-        padding: 24px 16px;
-      }
-      .nm-flow-horizontal {
-        flex-direction: row;
-        width: 100%;
-        height: 30px;
-        align-self: center;
-        justify-content: center;
-        margin-bottom: 0;
-        margin: 10px 0;
-      }
-      .nm-h-arrow { width: 4px; height: 100%; }
-      .nm-h-arrow::before { width: 100%; height: 15px; left: 0; top: auto; }
-      
-      .nm-h-right::before { animation: slideDown 1.5s infinite linear; }
-      .nm-h-left::before { animation: slideUp 1.5s infinite linear; }
-      
-      .nm-h-right::after { right: auto; bottom: 0; left: -2px; border-color: transparent; border-top-color: var(--color-line); top: auto; }
-      .nm-h-left::after { left: -2px; top: 0; border-color: transparent; border-bottom-color: var(--color-line); }
-
-      .nm-cloud {
-        margin-left: 0;
-        align-self: stretch;
-        margin-bottom: 0;
-      }
-    }
-  </style>
+        <div class="nm-node nm-cloud">
+          <div class="nm-node-title">Облачные LLM</div>
+          <div class="nm-node-desc">OpenAI, Anthropic, Yandex…</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="aj-note">
     <span class="aj-key s">S</span>
-    <span><strong>Снятие барьера выбора:</strong> не заставляем клиента выбирать между небезопасным облаком и тяжёлым on-prem.</span>
+    <span>
+      <strong>Снятие барьера выбора:</strong> третий путь между небезопасным облаком и
+      тяжёлым on-prem — сила внешних моделей без передачи исходных ПДн.
+    </span>
   </div>
 </section>
+
+<style>
+  /* (bottom-pin списка вынесен в global .needs-list — общий для Needs и обеих шашек) */
+
+  /* зеркальный вариант эталонной структуры (шашечка): текст справа, визуал слева */
+  .needs-split.rev .needs-col {
+    order: 2;
+  }
+  .needs-split.rev .needs-visual {
+    order: 1;
+  }
+  @media (max-width: 860px) {
+    .needs-split.rev .needs-col {
+      order: 0;
+    }
+  }
+
+  /* Визуал поверх силк-шейдера. Переиспользуем язык диаграммы (nm-*). */
+  .tp-diagram {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 6%, 48px);
+  }
+  .tp-diagram--options {
+    gap: 14px;
+  }
+  .tp-or {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    padding: 3px 12px;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .nm-infrastructure {
+    position: relative;
+    width: min(300px, 86%);
+    border: 1px dashed color-mix(in srgb, var(--color-line) 70%, var(--color-muted));
+    border-radius: 16px;
+    padding: 22px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .nm-infra-label {
+    position: absolute;
+    top: -9px;
+    background: var(--color-surface);
+    padding: 0 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+  }
+  .nm-node {
+    width: min(300px, 86%);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    border-radius: 12px;
+    padding: 13px 12px;
+    text-align: center;
+    box-shadow: 0 6px 16px rgba(22, 38, 78, 0.08);
+  }
+  .nm-infrastructure .nm-node {
+    width: 100%;
+  }
+  .nm-app {
+    background: color-mix(in srgb, var(--color-bg) 80%, var(--color-surface));
+  }
+  .nm-node--warn {
+    border-color: color-mix(in srgb, var(--color-warn) 45%, var(--color-line));
+    background: color-mix(in srgb, var(--color-warn) 8%, var(--color-surface));
+  }
+  .nm-node--warn .nm-node-title {
+    color: var(--color-warn);
+  }
+  .nm-node-center {
+    border: none;
+    color: #fff;
+    background: linear-gradient(135deg, #2a52d6 0%, #163fb8 100%);
+    box-shadow: 0 14px 30px rgba(22, 63, 184, 0.28);
+    overflow: hidden;
+  }
+  .nm-node-center .nm-node-title,
+  .nm-node-center .nm-node-desc {
+    color: #fff;
+    position: relative;
+    z-index: 2;
+  }
+  .nm-node-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 3px;
+    color: var(--color-ink);
+  }
+  .nm-node-desc {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+
+  /* анимированные стрелки потока */
+  .nm-flow {
+    display: flex;
+    gap: 12px;
+    height: 24px;
+    margin: 7px 0;
+  }
+  .nm-arrow {
+    width: 4px;
+    height: 100%;
+    position: relative;
+    background-color: color-mix(in srgb, var(--color-line) 80%, transparent);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .nm-arrow::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 13px;
+    background: var(--color-brand-strong);
+    filter: blur(1px);
+  }
+  .nm-down::before {
+    top: 0;
+    animation: tpDown 1.5s infinite linear;
+  }
+  .nm-up::before {
+    bottom: 0;
+    animation: tpUp 1.5s infinite linear;
+  }
+  @keyframes tpDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(220%); }
+  }
+  @keyframes tpUp {
+    0% { transform: translateY(220%); }
+    100% { transform: translateY(-100%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nm-arrow::before { animation: none; }
+  }
+</style>
+
+<script>
+  // Аккордеон трёх путей — тот же паттерн, что в Needs: открыт всегда один
+  // пункт, авто-переключение по таймеру (.needs-progress), клик перебивает.
+  // Инициализируем для обоих блоков.
+  const initAccordion = (root: HTMLElement) => {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('.needs-item'));
+    const bars = items.map((item) => item.querySelector<HTMLElement>('.needs-progress'));
+
+    const activate = (idx: number) => {
+      items.forEach((item, i) => item.classList.toggle('is-active', i === idx));
+    };
+
+    bars.forEach((bar, i) => {
+      bar?.addEventListener('animationend', () => {
+        if (items[i].classList.contains('is-active')) activate((i + 1) % items.length);
+      });
+    });
+
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('is-active')) {
+          const bar = bars[i];
+          if (bar) {
+            bar.style.animation = 'none';
+            void bar.offsetWidth;
+            bar.style.animation = '';
+          }
+        } else {
+          activate(i);
+        }
+      });
+    });
+  };
+
+  ['tp-market', 'tp-offer'].forEach((id) => {
+    const root = document.getElementById(id);
+    if (root) initAccordion(root);
+  });
+</script>

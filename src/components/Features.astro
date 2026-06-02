@@ -1,4 +1,7 @@
 ---
+import { t } from '../copy';
+import SilkBg from './SilkBg.astro';
+
 const features = [
   {
     icon: 'shield',
@@ -51,8 +54,8 @@ const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase(
   <div class="section aj-proof">
     <div class="section-head">
       <span class="aj-chip">P</span>
-      <h2>Возможности НейроМаск</h2>
-      <p>Управляемый слой безопасности для ИИ-сценариев: маскирование, восстановление, политики и интеграции.</p>
+      <h2 data-copy="features.h2">{t('features.h2')}</h2>
+      <p data-copy="features.lead">{t('features.lead')}</p>
     </div>
 
     <div class="cap-layout">
@@ -67,7 +70,7 @@ const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase(
                 aria-expanded={i === 0 ? 'true' : 'false'}
                 aria-controls={`cap-panel-${i}`}
               >
-                <span class="cap-title">{f.title}</span>
+                <span class="cap-title" data-copy={`features.items.${i}.title`}>{t(`features.items.${i}.title`)}</span>
                 <span class="cap-chevron" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
                 </span>
@@ -75,7 +78,7 @@ const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase(
 
               <div class="cap-panel" id={`cap-panel-${i}`} role="region">
                 <div class="cap-panel-inner">
-                  <p class="cap-text">{f.text}</p>
+                  <p class="cap-text" data-copy={`features.items.${i}.text`}>{t(`features.items.${i}.text`)}</p>
                   <div class="aj-note">
                     <span class={keyClass(f.k)}>{f.k}</span>
                     <span>{f.note}</span>
@@ -89,11 +92,11 @@ const keyClass = (k: string) => (k === 'B' ? 'aj-key' : `aj-key ${k.toLowerCase(
 
       {/* ---- Right: minimal preview atoms, crossfade per active item ---- */}
       <div class="cap-media">
-        <div class="cap-media-frame">
+        <div class="cap-media-frame silk-grad">
+          <SilkBg />
           {
             features.map((f, i) => (
               <figure class={`cap-shot${i === 0 ? ' is-active' : ''}`} data-cap={i}>
-                <div class="cap-ph" aria-hidden="true" />
                 <div class="cap-atom" aria-hidden="true">
                   {f.icon === 'shield' && (
                     <div class="atom">

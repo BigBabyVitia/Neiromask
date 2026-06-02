@@ -122,7 +122,7 @@
     border: 1px solid var(--color-ink);
     background: var(--color-ink);
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 14px;
     white-space: nowrap;
     cursor: pointer;
@@ -146,7 +146,7 @@
     color: var(--color-muted);
     background: var(--color-surface);
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   /* ---- Header: full-width bar at top → compact floating pill on scroll ---- */
@@ -179,46 +179,51 @@
     justify-content: flex-end;
   }
 
-  /* scrolled: compress width, add floating surface + blur + shadow
-     (height kept constant — only horizontal/visual change, no flicker) */
-  /* scrolled: compress width, add frosted glass floating surface + blur + shadow */
+  /* scrolled: compress width, collapse into the Figma frosted-glass island
+     (translucent white, thin white border, soft blur, 18px corners) */
   .nav-header[data-scrolled="true"] .nav-bar {
-    max-width: 920px;
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
-    border-radius: 999px;
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
+    max-width: 980px;
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: none;
+    border-radius: 18px;
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  }
+
+  /* Full-width variant: edge-to-edge static bar — no shrink, no vertical
+     padding, no rounding. Overflowing content is clipped, not reflowed.
+     Wins over the scroll-collapse rule (higher specificity via `header`). */
+  header.nav-header[data-mode="full"] {
+    padding: 0;
+  }
+  header.nav-header[data-mode="full"] .nav-bar {
+    max-width: none;
+    margin-inline: 0;
+    padding: 4px 24px;
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
+    overflow: hidden;
+    transition: none;
   }
 
   .nav-logo {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-weight: 800;
+    font-weight: 600;
   }
   .nav-logo-name {
     overflow: hidden;
     max-width: 160px;
     white-space: nowrap;
-    font-family: var(--font-serif);
-    font-weight: 500;
-    font-size: 19px;
+    font-weight: 600;
+    font-size: 16px;
     letter-spacing: -0.01em;
     transition: max-width 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
-  }
-  .nav-header[data-scrolled="true"] .nav-logo-name {
-    max-width: 0;
-    margin-left: -10px;
-    opacity: 0;
-  }
-  @media (max-width: 980px) {
-    .nav-header[data-scrolled="true"] .nav-logo-name {
-      max-width: 160px;
-      margin-left: 0;
-      opacity: 1;
-    }
   }
   /* center nav: bare on canvas by default, themed light when collected */
   .nav-center {
@@ -230,9 +235,10 @@
     height: 40px;
     padding: 0 16px;
     border-radius: 10px;
-    color: var(--color-muted);
-    font-size: 14px;
-    font-weight: 600;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     white-space: nowrap;
     transition: color 0.18s ease, background 0.18s ease;
   }
@@ -251,25 +257,26 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
+  /* CTA: solid black */
   .nav-cta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
-    padding: 0 18px;
+    height: 36px;
+    padding: 0 15px;
     border-radius: 999px;
     border: 1px solid var(--color-ink);
     background: var(--color-ink);
     color: #fff;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     white-space: nowrap;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.18s ease, opacity 0.18s ease;
   }
   .nav-cta:hover {
     transform: translateY(-1px);
-    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
+    opacity: 0.9;
   }
 
   .chip {
@@ -292,13 +299,13 @@
     background: #eff0ff;
     color: #6260c8;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .node-label {
     color: var(--color-muted);
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 600;
     text-transform: uppercase;
     margin-bottom: 8px;
   }
@@ -323,7 +330,7 @@
     padding: 8px 14px;
     color: var(--color-muted);
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 600;
     text-align: center;
     line-height: 1.35;
     font-family: var(--font-mono);
@@ -362,7 +369,7 @@
     place-items: center;
     color: rgba(17, 24, 39, 0.54);
     font-size: 28px;
-    font-weight: 900;
+    font-weight: 600;
   }
   .map-row {
     display: grid;
@@ -380,12 +387,12 @@
   }
   .map-to {
     color: var(--color-muted);
-    font-weight: 900;
+    font-weight: 600;
     text-align: center;
   }
   .map-mask {
     color: #1e50d6;
-    font-weight: 800;
+    font-weight: 600;
     text-align: right;
   }
   .mask-mini-llm {
@@ -481,7 +488,7 @@
     padding: 0 14px;
     font: inherit;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     flex: 0 0 auto;
@@ -659,25 +666,17 @@
 }
 
 /* ---- structural styles (scene visibility, fixed dev tools) ---- */
+/* Logo: frosted square wrapper (Figma "Logo Mark") + beige shield glyph */
 .logo-mark {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  /* фон даёт .aurora-grad (global) */
-  color: #fff;
-  font-size: 12px;
-  font-weight: 900;
+  width: 36px;
+  height: 36px;
 }
-.logo-mark svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.logo-shield {
+  display: block;
+  width: 36px;
+  height: 36px;
 }
 
 .hero-h1 {
@@ -720,7 +719,7 @@
   backdrop-filter: blur(18px);
   font: inherit;
   font-size: 12px;
-  font-weight: 850;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -780,17 +779,46 @@ h3 {
 }
 .band {
   background: var(--color-surface);
-  border-top: 1px solid var(--color-line);
-  border-bottom: 1px solid var(--color-line);
+  position: relative;
+}
+/* Девайдеры между блоками: центрированная линия шириной с контент-колонку
+   (1180 − 48px padding-inline = 1132px), а не во всю ширину вьюпорта.
+   На узких экранах сужается до 100% − 48px (тот же 24px инсет, что у .section). */
+.band::before,
+.band::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1132px, calc(100% - 48px));
+  height: 1px;
+  background: var(--color-line);
+  pointer-events: none;
+}
+.band::before {
+  top: 0;
+}
+.band::after {
+  bottom: 0;
 }
 /* Второй блок после параболы (KeyVisual, #6f675c): градиент от того же
    серо-коричневого цвета обратно к белому фону. Верхний бордер убран,
    чтобы переход был бесшовным. */
+/* Problem без своих девайдеров: верх — бесшовный переход от параболы KeyVisual,
+   низ дал бы 2px на стыке с соседним .band #needs (его ::before уже рисует линию). */
+#problem.band::before,
+#problem.band::after {
+  display: none;
+}
 #problem.band {
-  border-top: none;
   background:
     linear-gradient(180deg, rgba(111, 103, 92, 0.09) 0%, rgba(111, 103, 92, 0) 240px),
     var(--color-surface);
+}
+/* Needs — нижний девайдер убран: между первой шашкой (Needs) и второй (ThirdPath)
+   линия не нужна. Верхний (::before) остаётся — стык с Problem. */
+#needs.band::after {
+  display: none;
 }
 .section-head {
   display: grid;
@@ -866,8 +894,8 @@ h3 {
   margin: auto 0 0;
   padding-top: 28px;
   color: var(--color-muted);
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.55;
 }
 .risk-number {
   width: 30px;
@@ -879,7 +907,7 @@ h3 {
   background: var(--color-dark);
   color: #fff;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 600;
 }
 .bullets {
   display: grid;
@@ -893,7 +921,7 @@ h3 {
   display: flex;
   gap: 10px;
   color: var(--color-muted);
-  font-size: 17px;
+  font-size: 16px;
 }
 .dot {
   flex: 0 0 auto;
@@ -909,6 +937,201 @@ h3 {
   }
   .risk-row {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Needs (референс-блок: список слева / silk-визуализатор справа) ---- */
+.needs-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: stretch;
+}
+/* колонка тянется на высоту карточки; space-between даёт большой воздух
+   между заголовком сверху и списком снизу — как в референсе */
+.needs-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+}
+.needs-chip {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 9px 17px;
+  background: color-mix(in srgb, var(--color-ink) 6%, var(--color-surface));
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+}
+.needs-title {
+  margin: 22px 0 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(26px, 2.8vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.needs-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  --needs-dur: 6s;
+  /* прибит к низу колонки: при переключении пунктов список растёт вверх от
+     фиксированного низа, высота секции не зависит от описаний → нет скачков. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.needs-item {
+  position: relative;
+  border-top: 1px solid var(--color-line);
+  padding: 26px 0;
+  cursor: pointer;
+}
+.needs-item:last-child {
+  padding-bottom: 0;
+}
+
+/* таймер автопереключения: тонкая тёмная линия поверх светлого верхнего
+   девайдера активного пункта. Ширина растёт за --needs-dur, заполняя
+   девайдер слева направо и показывая прогресс до переключения. */
+.needs-progress {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-ink);
+  opacity: 0.42;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.needs-item.is-active .needs-progress {
+  animation: needsFill var(--needs-dur, 6s) linear forwards;
+}
+@keyframes needsFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.needs-item__title {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted);
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+.needs-item.is-active .needs-item__title {
+  color: var(--color-ink);
+  margin-bottom: 10px;
+}
+/* описание раскрывается только у активного пункта (открыт всегда один) */
+.needs-item__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.34s ease;
+}
+.needs-item.is-active .needs-item__panel {
+  grid-template-rows: 1fr;
+}
+.needs-item__desc {
+  margin: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 48ch;
+}
+
+/* ---- silk-визуализатор (жёлто-синий шейдер из нижних карточек) ---- */
+.needs-visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-height: 460px;
+  border-radius: 28px;
+}
+/* тёплый кремовый веер поверх шейдера: жёлтый доминирует, синий — акценты
+   (референс тёплый, а голый шейдер местами ловит синие кадры) */
+.needs-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(86% 72% at 24% 14%, rgba(255, 247, 224, 0.85), rgba(255, 247, 224, 0) 58%),
+    radial-gradient(80% 72% at 90% 86%, rgba(255, 235, 195, 0.62), rgba(255, 235, 195, 0) 56%),
+    linear-gradient(165deg, rgba(255, 244, 216, 0.48), rgba(255, 238, 205, 0.3));
+}
+/* декоративный визуализатор: значение PII (жёлтый) → токен (синий) */
+.needs-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: clamp(22px, 6%, 48px);
+}
+.nm-raw,
+.nm-tok {
+  border-radius: 10px;
+  padding: 7px 13px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.nm-raw {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+}
+.nm-tok {
+  background: #ece6da;
+  color: var(--color-ink);
+}
+.nm-arrow {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--color-muted);
+}
+/* лёгкое дыхание стрелки — без перестроения макета */
+@media (prefers-reduced-motion: no-preference) {
+  .nm-arrow { animation: nmArrow 3.4s ease-in-out infinite; }
+}
+@keyframes nmArrow {
+  0%, 100% { opacity: 0.5; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(3px); }
+}
+@media (max-width: 860px) {
+  .needs-split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .needs-col {
+    gap: 28px;
+    position: static;
+  }
+  .needs-list {
+    position: static;
+  }
+  .needs-visual {
+    aspect-ratio: 4 / 3;
+    min-height: 340px;
   }
 }
 
@@ -970,7 +1193,7 @@ h3 {
   border-radius: 14px;
   padding: 22px;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 600;
   color: #111827;
 }
 @media (max-width: 980px) {
@@ -1023,11 +1246,6 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border: 1px solid var(--color-line);
-  background: var(--color-surface);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: var(--shadow-card);
 }
 .flow-card--left {
   margin-right: auto;
@@ -1036,7 +1254,7 @@ h3 {
   margin-left: auto;
 }
 .flow-card + .flow-card {
-  margin-top: -56px; /* interlock so the zigzag weaves around the rail */
+  margin-top: 300px; /* spaced zigzag: ~2× the per-card scroll pitch */
 }
 
 /* header: bordered number box + title */
@@ -1062,8 +1280,11 @@ h3 {
   color: var(--color-ink);
 }
 .flow-card__title {
+  font-family: var(--font-serif);
+  font-weight: 500;
   font-size: 20px;
   line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 /* footer: tag chip + step description */
@@ -1099,7 +1320,7 @@ h3 {
   grid-column: 1 / -1;
   margin: 0;
   color: var(--color-muted);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.55;
   max-width: 52ch;
 }
@@ -1107,7 +1328,7 @@ h3 {
 /* stage: big framed area where the SVG animation will live */
 .flow-card__stage {
   position: relative;
-  min-height: 200px;
+  aspect-ratio: 1 / 1;
   border: 1px solid color-mix(in srgb, var(--color-line) 85%, transparent);
   border-radius: 14px;
   background:
@@ -1171,21 +1392,22 @@ h3 {
     width: 100%;
   }
   .flow-card + .flow-card {
-    margin-top: 18px;
+    margin-top: 36px;
   }
 }
 
-/* ---- How scenes: animated isometric wireframes on a dark stage ---- */
+/* ---- How scenes: animated isometric wireframes on a cream stage ----
+   Graphite wireframe on warm paper; brand-blue reserved as the single
+   accent per scene (the hero object / active element). ------------------ */
 #how .flow-card__stage {
   background:
-    radial-gradient(125% 90% at 50% 2%, rgba(61, 107, 255, 0.18), transparent 56%),
-    radial-gradient(95% 80% at 86% 104%, rgba(42, 75, 212, 0.16), transparent 60%),
-    #0e121b;
-  border-color: rgba(120, 140, 190, 0.22);
+    radial-gradient(120% 85% at 50% -8%, rgba(61, 107, 255, 0.07), transparent 55%),
+    linear-gradient(180deg, #faf8f3, #efebe2);
+  border-color: rgba(58, 52, 44, 0.16);
 }
 #how .flow-card__stage::before,
 #how .flow-card__stage::after {
-  border-color: rgba(150, 170, 210, 0.36);
+  border-color: rgba(58, 52, 44, 0.28);
   z-index: 2;
 }
 
@@ -1198,9 +1420,11 @@ h3 {
   --flow-art-scale: 1.52;
   --flow-art-x: 0px;
   --flow-art-y: 0px;
-  --ln: rgba(196, 208, 230, 0.42);
-  --acc: #5f8cff;
-  --warn: #ff6076;
+  --ln: rgba(58, 52, 44, 0.34); /* warm graphite — primary wireframe */
+  --ln-soft: rgba(58, 52, 44, 0.2); /* floors, rails, ghosts */
+  --acc: #3d6bff; /* brand blue — the only accent */
+  --acc-soft: rgba(61, 107, 255, 0.16);
+  --warn: #e8607a; /* muted, block-only */
 }
 .fs-art {
   transform-box: view-box;
@@ -1227,21 +1451,21 @@ h3 {
 
 /* wireframe primitives */
 .fs-face {
-  fill: rgba(150, 175, 225, 0.05);
+  fill: rgba(58, 52, 44, 0.045);
   stroke: var(--ln);
   stroke-width: 1;
   stroke-linejoin: round;
 }
 .fs-base {
-  fill: rgba(150, 175, 225, 0.07);
+  fill: rgba(58, 52, 44, 0.06);
 }
 .fs-dim {
-  fill: rgba(150, 175, 225, 0.02);
-  stroke: rgba(196, 208, 230, 0.2);
+  fill: rgba(58, 52, 44, 0.02);
+  stroke: var(--ln-soft);
 }
 .fs-edge {
   fill: none;
-  stroke: rgba(196, 208, 230, 0.36);
+  stroke: rgba(58, 52, 44, 0.32);
   stroke-width: 1;
   stroke-linecap: round;
 }
@@ -1249,14 +1473,14 @@ h3 {
   stroke: var(--acc);
 }
 .fs-acc-face {
-  fill: rgba(95, 140, 255, 0.2);
+  fill: var(--acc-soft);
   stroke: var(--acc);
   stroke-width: 1.2;
   stroke-linejoin: round;
 }
 .fs-floor {
   fill: none;
-  stroke: rgba(150, 168, 205, 0.24);
+  stroke: var(--ln-soft);
   stroke-width: 1;
   stroke-dasharray: 2 5;
   stroke-linecap: round;
@@ -1266,15 +1490,15 @@ h3 {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  fill: rgba(214, 224, 240, 0.74);
+  fill: rgba(58, 52, 44, 0.62);
 }
 .fs-mid {
   text-anchor: middle;
-  fill: #cfe0ff;
+  fill: var(--acc);
 }
 .fs-chip {
-  fill: rgba(255, 255, 255, 0.05);
-  stroke: rgba(196, 208, 230, 0.18);
+  fill: rgba(58, 52, 44, 0.05);
+  stroke: rgba(58, 52, 44, 0.16);
   stroke-width: 1;
 }
 .fs-led {
@@ -1285,17 +1509,17 @@ h3 {
   stroke: var(--acc);
   stroke-width: 2;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 4px var(--acc));
+  filter: drop-shadow(0 0 3px rgba(61, 107, 255, 0.45));
 }
 .fs-rail {
   fill: none;
-  stroke: rgba(196, 208, 230, 0.3);
+  stroke: var(--ln-soft);
   stroke-width: 1;
   stroke-dasharray: 2 4;
 }
 .fs-bound {
   fill: none;
-  stroke: rgba(95, 140, 255, 0.5);
+  stroke: rgba(61, 107, 255, 0.45); /* protection perimeter — soft blue */
   stroke-width: 1;
   stroke-dasharray: 3 4;
 }
@@ -1306,11 +1530,11 @@ h3 {
   fill: var(--warn);
 }
 .fs-dot-allow {
-  fill: #8fb0ff;
+  fill: rgba(58, 52, 44, 0.4); /* pass-through — neutral graphite */
 }
 .fs-tok {
-  fill: #cfe0ff;
-  filter: drop-shadow(0 0 3px var(--acc));
+  fill: var(--acc);
+  filter: drop-shadow(0 0 2px rgba(61, 107, 255, 0.5));
 }
 .fs-lock,
 .fs-keyhole {
@@ -1348,40 +1572,87 @@ h3 {
   86% { opacity: 1; }
   100% { transform: translate(-24px, 12px); opacity: 0; }
 }
-@keyframes fs-pop {
-  0%, 100% { opacity: 0; transform: scale(0.7); }
-  18%, 72% { opacity: 1; transform: scale(1); }
-}
 @keyframes fs-travel {
   0% { transform: translate(0, 0); opacity: 0; }
   12% { opacity: 1; }
   84% { opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
 }
-@keyframes fs-appear {
-  0%, 28% { opacity: 0; transform: translateY(4px); }
-  44%, 92% { opacity: 1; transform: translateY(0); }
+/* шаг 2 — поля подсвечиваются по очереди ВСЛЕД за лучом, держатся до
+   конца прохода, гаснут вместе. Запечено в кадры (без delay) → фаза
+   жёстко синхронна с fs-scan того же периода. */
+@keyframes fs-det1 {
+  0%, 10% { opacity: 0; transform: scale(0.6); }
+  18% { opacity: 1; transform: scale(1.12); }
+  24%, 84% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(1); }
+}
+@keyframes fs-det2 {
+  0%, 28% { opacity: 0; transform: scale(0.6); }
+  36% { opacity: 1; transform: scale(1.12); }
+  42%, 84% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(1); }
+}
+@keyframes fs-det3 {
+  0%, 46% { opacity: 0; transform: scale(0.6); }
+  54% { opacity: 1; transform: scale(1.12); }
+  60%, 84% { opacity: 1; transform: scale(1); }
+  94%, 100% { opacity: 0; transform: scale(1); }
+}
+/* шаг 5 — ответ долетает к ключу (к 36%) и ОСТАётся, затем журнал
+   штампуется записями по очереди. Без delay → строгий порядок. */
+@keyframes fs-arrive {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  36%, 86% { transform: translate(var(--tx), var(--ty)); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+}
+@keyframes fs-stamp1 {
+  0%, 40% { opacity: 0; transform: translateY(4px); }
+  48%, 94% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; }
 }
-@keyframes fs-draw {
-  0%, 38% { stroke-dashoffset: 14; }
-  55%, 92% { stroke-dashoffset: 0; }
+@keyframes fs-stamp2 {
+  0%, 52% { opacity: 0; transform: translateY(4px); }
+  60%, 94% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+@keyframes fs-stamp3 {
+  0%, 64% { opacity: 0; transform: translateY(4px); }
+  72%, 94% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+@keyframes fs-draw1 {
+  0%, 50% { stroke-dashoffset: 14; }
+  60%, 94% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 14; }
+}
+@keyframes fs-draw2 {
+  0%, 62% { stroke-dashoffset: 14; }
+  72%, 94% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 14; }
+}
+@keyframes fs-draw3 {
+  0%, 74% { stroke-dashoffset: 14; }
+  84%, 94% { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: 14; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* шаг 1 */
+  /* шаг 1 — документ парит, призрачные входы дрейфуют; размерный тег
+     статичен (выноска, не должна мигать) */
   .fs-bob { animation: fs-bob 3.6s ease-in-out infinite; }
-  .fs-tag { animation: fs-breathe 3.6s ease-in-out infinite; }
   .fs-drift.fs-d1 { animation: fs-drift 5s ease-in-out infinite; }
   .fs-drift.fs-d2 { animation: fs-drift 5s ease-in-out infinite reverse; }
 
-  /* шаг 2 */
+  /* шаг 2 — луч сканирует, поля вспыхивают по очереди ему вслед.
+     Все 3.2s без delay → синхронны с лучом; порядок ≈ ход луча
+     (верх-право → центр → лево) = p1, p3, p2. */
   .fs-scan { animation: fs-scan 3.2s ease-in-out infinite; }
   .fs-pop { transform-box: fill-box; transform-origin: center; opacity: 0; }
-  .fs-p1 { animation: fs-pop 3.2s ease-in-out infinite; }
-  .fs-p2 { animation: fs-pop 3.2s ease-in-out infinite; animation-delay: 0.5s; }
-  .fs-p3 { animation: fs-pop 3.2s ease-in-out infinite; animation-delay: 1s; }
+  .fs-p1 { animation: fs-det1 3.2s ease-out infinite; }
+  .fs-p3 { animation: fs-det2 3.2s ease-out infinite; }
+  .fs-p2 { animation: fs-det3 3.2s ease-out infinite; }
   .fs-blink { animation: fs-breathe 1.4s ease-in-out infinite; }
 
   /* шаг 3 */
@@ -1398,17 +1669,19 @@ h3 {
   .fs-packet { opacity: 0; animation: fs-travel 3s ease-in-out infinite; }
   .fs-llm { animation: fs-glow 3s ease-in-out infinite; }
 
-  /* шаг 5 */
-  .fs-resp { opacity: 0; animation: fs-travel 3.4s ease-in-out infinite; }
-  .fs-key { animation: fs-glow 3.4s ease-in-out infinite; }
+  /* шаг 5 — ответ прилетает к ключу и остаётся, затем журнал штампует
+     записи по очереди (каждая с галочкой). Один период 3.6s, без delay
+     → ответ ВСЕГДА раньше записей. */
+  .fs-resp { opacity: 0; animation: fs-arrive 3.6s ease-in-out infinite; }
+  .fs-key { animation: fs-glow 3.6s ease-in-out infinite; }
   .fs-log { opacity: 0; }
-  .fs-l1 { animation: fs-appear 3.4s ease-out infinite; animation-delay: 1.2s; }
-  .fs-l2 { animation: fs-appear 3.4s ease-out infinite; animation-delay: 1.7s; }
-  .fs-l3 { animation: fs-appear 3.4s ease-out infinite; animation-delay: 2.2s; }
+  .fs-l1 { animation: fs-stamp1 3.6s ease-out infinite; }
+  .fs-l2 { animation: fs-stamp2 3.6s ease-out infinite; }
+  .fs-l3 { animation: fs-stamp3 3.6s ease-out infinite; }
   .fs-check { stroke-dasharray: 14; stroke-dashoffset: 14; }
-  .fs-l1 .fs-check { animation: fs-draw 3.4s ease-out infinite; animation-delay: 1.4s; }
-  .fs-l2 .fs-check { animation: fs-draw 3.4s ease-out infinite; animation-delay: 1.9s; }
-  .fs-l3 .fs-check { animation: fs-draw 3.4s ease-out infinite; animation-delay: 2.4s; }
+  .fs-l1 .fs-check { animation: fs-draw1 3.6s ease-out infinite; }
+  .fs-l2 .fs-check { animation: fs-draw2 3.6s ease-out infinite; }
+  .fs-l3 .fs-check { animation: fs-draw3 3.6s ease-out infinite; }
 }
 
 /* ---- Example (before / after + restore map) ---- */
@@ -1468,7 +1741,7 @@ pre {
 }
 .tag {
   color: var(--color-violet);
-  font-weight: 800;
+  font-weight: 600;
 }
 @media (max-width: 980px) {
   .before-after {
@@ -1514,7 +1787,7 @@ pre {
 .cap-title {
   flex: 1 1 auto;
   font-family: var(--font-sans);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   letter-spacing: -0.01em;
   transition: color 0.2s ease;
@@ -1591,10 +1864,7 @@ pre {
   border-radius: 16px;
   border: 1px solid var(--color-line);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 22%, rgba(61, 107, 255, 0.16), transparent 46%),
-    radial-gradient(circle at 84% 78%, rgba(42, 75, 212, 0.12), transparent 48%),
-    color-mix(in srgb, var(--color-surface) 92%, var(--color-bg));
+  /* фон даёт silk-шейдер (<SilkBg/> + .silk-grad); CSS-меш-фолбэк — в .silk-grad */
 }
 .cap-shot {
   position: absolute;
@@ -1606,18 +1876,6 @@ pre {
 }
 .cap-shot.is-active {
   opacity: 1;
-}
-.cap-ph {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--color-line) 45%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--color-line) 45%, transparent) 1px, transparent 1px);
-  background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 38%, transparent 80%);
-  mask-image: radial-gradient(ellipse at center, #000 38%, transparent 80%);
 }
 .cap-ph__label {
   font-family: var(--font-mono);
@@ -1677,7 +1935,8 @@ pre {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* chips */
@@ -1908,9 +2167,9 @@ pre {
 }
 .policy-stage svg {
   display: block;
-  height: 86%;
+  height: 76%;
   width: auto;
-  max-width: 92%;
+  max-width: 82%;
   filter: drop-shadow(0 14px 26px rgba(40, 34, 24, 0.13));
 }
 .policy-body {
@@ -1923,6 +2182,7 @@ pre {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-size: 18px;
 }
 .policy-card h3::before {
   content: "";
@@ -1937,10 +2197,9 @@ pre {
 }
 .mock-line {
   margin-top: auto;
-  border: 1px solid var(--color-line);
   border-radius: 10px;
   padding: 10px 12px;
-  background: var(--color-shade);
+  background: color-mix(in srgb, var(--color-shade) 45%, var(--color-bg));
   color: var(--color-ink);
   font-family: var(--font-mono);
   font-size: 13px;
@@ -2097,6 +2356,15 @@ pre {
   margin-top: 38px;
   align-items: stretch;
 }
+/* колонка: карточка + сноска под ней; карточка тянется на всю высоту ряда,
+   сноски выровнены по низу независимо от длины */
+.plan-col {
+  display: flex;
+  flex-direction: column;
+}
+.plan-col .plan {
+  flex: 1 1 auto;
+}
 .plan {
   position: relative;
   display: flex;
@@ -2111,12 +2379,10 @@ pre {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card);
 }
-/* рекомендованный (облако) — крупная гладкая aurora-панель (бренд-эффект),
-   контент во frosted-стекле сверху. .aurora-grad даёт сам градиент. */
+/* рекомендованный (облако) — крупная панель на silk-шейдере (бренд-эффект),
+   белый контент поверх. Фон даёт .silk-grad--deep (canvas + тёмный фолбэк-меш). */
 .plan--aurora {
   border: 0;
-  /* перебиваем .plan { background:#fff } — иначе тёплый базовый синий aurora гаснет */
-  background-color: #163fb8;
   color: #fff;
   box-shadow: 0 22px 60px rgba(22, 63, 184, 0.32);
 }
@@ -2131,27 +2397,17 @@ pre {
 }
 .plan--aurora .plan-badge {
   background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.34);
   color: #fff;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 .plan--aurora .plan-price {
   margin-top: 20px;
-  padding: 16px 18px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 .plan--aurora .plan-price b {
   color: #fff;
 }
 .plan--aurora .plan-price span {
-  color: rgba(255, 255, 255, 0.82);
-}
-.plan--aurora .plan-note {
   color: rgba(255, 255, 255, 0.82);
 }
 .plan--aurora .plan-feats {
@@ -2192,7 +2448,7 @@ pre {
   border-radius: 999px;
   color: #fff;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -2229,11 +2485,17 @@ pre {
   font-size: 15px;
   font-weight: 600;
 }
+/* мелкая сноска под ценой — лимиты/условия, вынесены из самой цены */
 .plan-note {
-  margin: 12px 0 0;
+  margin: 8px 0 0;
   color: var(--color-muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.45;
+}
+/* вариант сноски вне карточки — мелкий текст под всей карточкой на фоне страницы */
+.plan-note--out {
+  margin: 12px 4px 0;
+  color: var(--color-faint, var(--color-muted));
 }
 
 .plan-feats {
@@ -2305,12 +2567,7 @@ pre {
 .interface-title {
   flex: 1 1 auto;
   font-size: 13px;
-  font-weight: 850;
-}
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  font-weight: 600;
 }
 .field {
   display: grid;
@@ -2323,23 +2580,23 @@ pre {
 .field-label {
   color: var(--color-ink);
   font-size: 12px;
-  font-weight: 850;
+  font-weight: 600;
 }
 .field input,
 .field select,
 .field textarea {
   width: 100%;
-  min-height: 46px;
-  border: 1px solid #d9e1ee;
-  border-radius: 10px;
-  background: #fff;
+  min-height: 52px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-shade);
   color: var(--color-ink);
   font: inherit;
   font-size: 16px;
   letter-spacing: 0;
-  padding: 10px 12px;
+  padding: 12px 16px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 .field input::placeholder,
 .field textarea::placeholder {
@@ -2354,18 +2611,18 @@ pre {
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: #3d6bff;
-  box-shadow: 0 0 0 4px rgba(61, 107, 255, 0.2);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 2px var(--color-brand);
 }
 .deploy-options {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 4px;
-  height: 46px;
+  height: 52px;
   padding: 4px 5px;
   border: 0;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-shade) 52%, var(--color-surface));
+  border-radius: 12px;
+  background: var(--color-shade);
 }
 .deploy-options label {
   position: relative;
@@ -2412,21 +2669,16 @@ pre {
 .deploy-options label:has(input:focus-visible) {
   box-shadow: 0 0 0 3px rgba(61, 107, 255, 0.18);
 }
-.form-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding-top: 16px;
-}
 .form-submit {
-  border: 1px solid var(--color-ink);
+  width: 100%;
+  margin-top: 4px;
+  border: 0;
   border-radius: 999px;
   background: var(--color-ink);
   color: #fff;
-  padding: 13px 22px;
-  font-weight: 800;
-  font-size: 14px;
+  padding: 16px 22px;
+  font-weight: 600;
+  font-size: 15px;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -2447,49 +2699,44 @@ pre {
 }
 
 /* ---- Заявка: copy + classic form card ---- */
-.cta-split {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1fr);
-  gap: 44px;
-  align-items: start;
+.cta-flow {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 #request {
   scroll-margin-top: 112px;
 }
-.cta-copy {
-  max-width: 460px;
-}
-.cta-copy h2 {
-  margin-top: 2px;
-}
-.cta-copy > p {
-  margin: 16px 0 0;
-  color: var(--color-muted);
-  font-size: 15px;
-  line-height: 1.6;
-}
-.cta-copy strong {
+.cta-includes strong {
   display: block;
-  margin-top: 26px;
-  font-size: 14px;
+  font-size: 15px;
 }
-.cta-copy ul {
+.cta-includes ul {
   margin: 14px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 11px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 32px;
 }
-.cta-copy li {
+@media (max-width: 640px) {
+  .cta-includes ul {
+    grid-template-columns: 1fr;
+  }
+}
+.cta-includes li {
   display: grid;
-  grid-template-columns: 20px 1fr;
+  grid-template-columns: 22px 1fr;
   gap: 10px;
   align-items: start;
   color: var(--color-muted);
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: 16px;
+  line-height: 1.5;
 }
-.cta-copy li svg {
+.cta-includes li svg {
   width: 18px;
   height: 18px;
   margin-top: 1px;
@@ -2500,14 +2747,7 @@ pre {
   stroke-linejoin: round;
 }
 
-.request-panel {
-  border: 1px solid var(--color-line);
-  border-radius: 18px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 94%, var(--color-shade)), var(--color-surface));
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  padding: 28px;
+.request-flow {
   scroll-margin-top: 112px;
 }
 .interface-badge {
@@ -2516,26 +2756,12 @@ pre {
   padding: 5px 9px;
   color: #dbeafe;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
 }
 .request-form {
   display: grid;
-  gap: 18px;
-}
-.request-form__head {
-  margin-bottom: 22px;
-}
-.request-form__head h3 {
-  font-size: 30px;
-  line-height: 1.08;
-}
-.request-form__head p {
-  margin: 10px 0 0;
-  max-width: 44ch;
-  color: var(--color-muted);
-  font-size: 15px;
-  line-height: 1.5;
+  gap: 14px;
 }
 
 /* form success state */
@@ -2651,7 +2877,7 @@ pre {
   background: rgba(61, 107, 255, 0.16);
   color: var(--color-brand);
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -2665,12 +2891,8 @@ pre {
 }
 
 @media (max-width: 980px) {
-  .cta-split {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .cta-copy {
-    max-width: none;
+  .cta-flow {
+    gap: 22px;
   }
 }
 @media (max-width: 860px) {
@@ -2684,16 +2906,6 @@ pre {
   }
   .plan-tagline {
     min-height: 0;
-  }
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-  .form-footer {
-    align-items: stretch;
-    flex-direction: column-reverse;
-  }
-  .form-submit {
-    width: 100%;
   }
   .entity-meter {
     grid-template-columns: 1fr;
@@ -2811,7 +3023,7 @@ pre {
 }
 .stream-token {
   color: var(--color-brand);
-  font-weight: 900;
+  font-weight: 600;
 }
 
 /* twin */
@@ -2855,7 +3067,7 @@ pre {
   border-radius: 4px;
   padding: 2px 5px;
   color: #29291e;
-  font-weight: 800;
+  font-weight: 600;
 }
 .mask-chip {
   display: inline-flex;
@@ -2863,7 +3075,7 @@ pre {
   border-radius: 6px;
   background: #e8eeff;
   color: #1e50d6;
-  font-weight: 900;
+  font-weight: 600;
   margin: 3px;
   font-size: 13px;
 }
@@ -2902,7 +3114,7 @@ pre {
   border-bottom: 1px solid var(--color-line);
   color: var(--color-muted);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
 }
 .bubble {
   border-radius: 14px;
@@ -2929,7 +3141,7 @@ pre {
   border-radius: 8px;
   background: #fff;
   border: 1px solid #d9e0ea;
-  font-weight: 850;
+  font-weight: 600;
   font-size: 13px;
 }
 .process-panel {
@@ -2989,7 +3201,7 @@ pre {
   place-items: center;
   background: var(--color-dark);
   color: #fff;
-  font-weight: 900;
+  font-weight: 600;
   font-size: 13px;
 }
 .step-copy strong {
@@ -3006,7 +3218,7 @@ pre {
   background: #e8eeff;
   color: #1e50d6;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -3054,7 +3266,7 @@ pre {
   height: 24px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 600;
   text-transform: uppercase;
   background: #e8eeff;
   color: #1e50d6;
@@ -3095,7 +3307,7 @@ pre {
   border-radius: 999px;
   background: #e8eeff;
   color: #1e50d6;
-  font-weight: 900;
+  font-weight: 600;
   font-size: 10px;
   line-height: 1;
 }
@@ -3122,7 +3334,7 @@ pre {
   border-radius: 5px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  font-weight: 760;
+  font-weight: 600;
 }
 .aj-mark::after {
   content: attr(data-aj);
@@ -3134,7 +3346,7 @@ pre {
   margin-left: 4px;
   border-radius: 999px;
   font-size: 9px;
-  font-weight: 900;
+  font-weight: 600;
   line-height: 1;
   vertical-align: 0.12em;
 }
@@ -3190,7 +3402,7 @@ pre {
 }
 .aj-note strong {
   color: var(--color-ink);
-  font-weight: 800;
+  font-weight: 600;
 }
 .bento-card .aj-note,
 .feature .aj-note {
@@ -3327,7 +3539,7 @@ pre {
   justify-content: space-between;
   gap: 8px;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -3404,7 +3616,7 @@ pre {
 }
 .kv-core-label {
   font-size: 12px;
-  font-weight: 850;
+  font-weight: 600;
   letter-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.9);
   background: rgba(255, 255, 255, 0.08);

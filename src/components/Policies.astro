@@ -1,5 +1,6 @@
 ---
 import SilkBg from './SilkBg.astro';
+import { t } from '../copy';
 
 const cardBase = `
     <rect x="28" y="10" width="150" height="110" rx="16" fill="#ffffff" stroke="#ece8df"/>
@@ -64,21 +65,21 @@ const policies = [
 <section class="section aj-proof">
   <div class="section-head">
     <span class="aj-chip">P</span>
-    <h2>Три действия с запросом</h2>
-    <p>НейроМаск не просто «ищет персональные данные». Он применяет понятное правило к конкретному сценарию, роли и типу данных.</p>
+    <h2 data-copy="pol.h2">{t('pol.h2')}</h2>
+    <p data-copy="pol.lead">{t('pol.lead')}</p>
   </div>
 
   <div class="policy-cards">
     {
-      policies.map((p) => (
+      policies.map((p, i) => (
         <article class={`policy-card ${p.cls}`}>
           <div class="policy-stage silk-grad">
             <SilkBg />
             <div class="policy-art" set:html={icons[p.cls]} />
           </div>
           <div class="policy-body">
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
+            <h3 data-copy={`pol.items.${i}.title`}>{t(`pol.items.${i}.title`)}</h3>
+            <p data-copy={`pol.items.${i}.text`}>{t(`pol.items.${i}.text`)}</p>
             <div class="mock-line">{p.mock}</div>
           </div>
         </article>

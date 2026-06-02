@@ -1,89 +1,78 @@
 ---
 // Блок 1 — прайсинг: две версии (облако / выделенный контур).
 // Статичные карточки; CTA скроллят к блоку заявки (#request).
-const cloudFeats = [
-  'Маскирование ФИО, телефонов, паспортов и реквизитов',
-  'Карта правил mask / block / allow под ваш сценарий',
-  'Восстановление ответа в контуре Нейроключа',
-  'Журнал обработки для ИБ',
-  'Интеграция с внешними LLM по API',
-];
-const onpremFeats = [
-  'Установка в вашем закрытом контуре / on-prem',
-  'Данные и карта восстановления не покидают периметр',
-  'Интеграция с вашими моделями и SSO',
-  'Требования к инфраструктуре под нагрузку',
-  'Поддержка и обновления по SLA',
-];
+import { t } from '../copy';
+import SilkBg from './SilkBg.astro';
+
+const cloudFeats = [0, 1, 2, 3, 4];
+const onpremFeats = [0, 1, 2, 3, 4];
 ---
 
 <section class="section" id="pilot">
   <div class="section-head">
-    <span class="eyebrow">Тарифы</span>
-    <h2>Облако или контур у вас</h2>
-    <p>
-      Две версии НейроМаск под нужный уровень контроля: быстрый старт в защищённом облаке или
-      установка в вашем периметре. Разбор первого сценария — в любом формате.
-    </p>
+    <span class="eyebrow" data-copy="pr.eyebrow">{t('pr.eyebrow')}</span>
+    <h2 data-copy="pr.h2">{t('pr.h2')}</h2>
+    <p data-copy="pr.lead">{t('pr.lead')}</p>
   </div>
 
   <div class="pricing-grid">
-    <!-- Облачная (рекомендуемая, aurora) -->
-    <div class="plan plan--aurora aurora-grad">
-      <div class="plan-head">
-        <span class="plan-name">Облачная</span>
-        <span class="plan-badge">Быстрый старт</span>
+    <!-- Облачная (рекомендуемая, silk-шейдер) -->
+    <div class="plan-col">
+      <div class="plan plan--aurora silk-grad silk-grad--deep">
+        <SilkBg variant="deep" />
+        <div class="plan-head">
+          <span class="plan-name" data-copy="pr.cloudName">{t('pr.cloudName')}</span>
+          <span class="plan-badge" data-copy="pr.cloudBadge">{t('pr.cloudBadge')}</span>
+        </div>
+        <p class="plan-tagline" data-copy="pr.cloudTagline">{t('pr.cloudTagline')}</p>
+
+        <div class="plan-price"><b>от 45 000 ₽</b><span>/ мес</span></div>
+
+        <ul class="plan-feats">
+          {
+            cloudFeats.map((i) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                <span data-copy={`pr.cloudFeats.${i}`}>{t(`pr.cloudFeats.${i}`)}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="plan-foot">
+          <a class="btn plan-cta" href="#request" data-copy="pr.cloudCta">{t('pr.cloudCta')}</a>
+        </div>
       </div>
-      <p class="plan-tagline">Запуск без установки — НейроМаск работает в защищённом облаке.</p>
-
-      <div class="plan-price"><b>от 45 000 ₽</b><span>/ мес</span></div>
-      <p class="plan-note">
-        Лимиты по запросам, пользователям и объёму маскирования уточняются под сценарий.
-      </p>
-
-      <ul class="plan-feats">
-        {
-          cloudFeats.map((f) => (
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
-              <span>{f}</span>
-            </li>
-          ))
-        }
-      </ul>
-
-      <div class="plan-foot">
-        <a class="btn plan-cta" href="#request">Разобрать сценарий</a>
-      </div>
+      <p class="plan-note plan-note--out" data-copy="pr.cloudNote">{t('pr.cloudNote')}</p>
     </div>
 
     <!-- Выделенный контур (on-prem) -->
-    <div class="plan">
-      <div class="plan-head">
-        <span class="plan-name">Выделенный контур</span>
-        <span class="plan-badge plan-badge--soft">On-prem</span>
+    <div class="plan-col">
+      <div class="plan">
+        <div class="plan-head">
+          <span class="plan-name" data-copy="pr.onpremName">{t('pr.onpremName')}</span>
+          <span class="plan-badge plan-badge--soft">On-prem</span>
+        </div>
+        <p class="plan-tagline" data-copy="pr.onpremTagline">{t('pr.onpremTagline')}</p>
+
+        <div class="plan-price"><b>По запросу</b></div>
+
+        <ul class="plan-feats">
+          {
+            onpremFeats.map((i) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                <span data-copy={`pr.onpremFeats.${i}`}>{t(`pr.onpremFeats.${i}`)}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="plan-foot">
+          <a class="btn btn--secondary plan-cta" href="#request" data-copy="pr.onpremCta">{t('pr.onpremCta')}</a>
+        </div>
       </div>
-      <p class="plan-tagline">Ставим НейроМаск на ваш сервер — данные не покидают периметр.</p>
-
-      <div class="plan-price"><b>По запросу</b></div>
-      <p class="plan-note">
-        Стоимость зависит от инфраструктуры и объёма — рассчитываем индивидуально.
-      </p>
-
-      <ul class="plan-feats">
-        {
-          onpremFeats.map((f) => (
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
-              <span>{f}</span>
-            </li>
-          ))
-        }
-      </ul>
-
-      <div class="plan-foot">
-        <a class="btn btn--secondary plan-cta" href="#request">Обсудить контур</a>
-      </div>
+      <p class="plan-note plan-note--out" data-copy="pr.onpremNote">{t('pr.onpremNote')}</p>
     </div>
   </div>
 </section>

@@ -1,0 +1,152 @@
+---
+// Снятие возражений перед формой: границы продукта + FAQ-аккордеон.
+import { t } from '../copy';
+
+const notFits = [0, 1, 2, 3];
+const faq = [0, 1, 2];
+---
+
+<section class="section aj-small" id="objections">
+  <div class="section-head">
+    <span class="aj-chip">S</span>
+    <h2 data-copy="obj.h2">{t('obj.h2')}</h2>
+  </div>
+
+  <div class="faq">
+    <div class="faq-list">
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">
+          <span data-copy="obj.notFitsTitle">{t('obj.notFitsTitle')}</span>
+          <svg class="faq-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            <ul class="faq-notfits">
+              {notFits.map((i) => <li data-copy={`fit.notFits.${i}`}>{t(`fit.notFits.${i}`)}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {
+        faq.map((i) => (
+          <div class="faq-item">
+            <button type="button" class="faq-q" aria-expanded="false">
+              <span data-copy={`obj.faq.${i}.q`}>{t(`obj.faq.${i}.q`)}</span>
+              <svg class="faq-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+            </button>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                <p data-copy={`obj.faq.${i}.a`}>{t(`obj.faq.${i}.a`)}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <style>
+    /* FAQ-аккордеон: «чем не является» — первый раскрытый пункт, дальше вопросы.
+       Размеры по именованной шкале: title→H3-serif, вопрос→H4, ответ→P1. */
+    .faq {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--color-line);
+    }
+    .faq-q {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 2px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--color-ink);
+    }
+    .faq-q:hover {
+      color: var(--color-brand-strong, #1e50d6);
+    }
+    .faq-chev {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      fill: none;
+      stroke: var(--color-muted);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.2s ease;
+    }
+    .faq-item.is-open .faq-chev {
+      transform: rotate(180deg);
+      stroke: var(--color-brand-strong, #1e50d6);
+    }
+    .faq-a {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.25s ease;
+    }
+    .faq-item.is-open .faq-a {
+      grid-template-rows: 1fr;
+    }
+    .faq-a-inner {
+      overflow: hidden;
+    }
+    .faq-a p {
+      margin: 0 0 22px;
+      color: var(--color-muted);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .faq-notfits {
+      margin: 0 0 22px;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--color-muted);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    @media (max-width: 560px) {
+      .faq-q {
+        font-size: 16px;
+        padding: 18px 2px;
+      }
+    }
+  </style>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('#objections .faq-item').forEach((item, idx) => {
+    const btn = item.querySelector<HTMLButtonElement>('.faq-q');
+    if (!btn) return;
+    const open = idx === 0; // верхний пункт («чем не является») открыт по умолчанию
+    item.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.addEventListener('click', () => {
+      const nowOpen = item.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(nowOpen));
+    });
+  });
+</script>
