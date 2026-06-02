@@ -2433,6 +2433,13 @@ pre {
 .form-submit:hover {
   background: #000;
 }
+.form-submit:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+.form-submit:disabled:hover {
+  background: var(--color-ink);
+}
 .form-status {
   color: var(--color-muted);
   font-size: 13px;

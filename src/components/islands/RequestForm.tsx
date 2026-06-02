@@ -1,14 +1,40 @@
 import { useState, type FormEvent } from 'react';
 
 const DEFAULT_STATUS = 'Ответим и согласуем первый разбор без передачи документов в открытый контур.';
+const ERROR_STATUS = 'Не получилось отправить заявку. Проверьте контакты или напишите нам напрямую.';
 
 export default function RequestForm() {
   const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState(DEFAULT_STATUS);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // No backend yet: keep the form interactive for the static landing page.
-    setSent(true);
+
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+
+    setIsSubmitting(true);
+    setStatus('Отправляем заявку...');
+
+    try {
+      const response = await fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Request failed');
+      }
+
+      setSent(true);
+      form.reset();
+    } catch {
+      setStatus(ERROR_STATUS);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -86,10 +112,10 @@ export default function RequestForm() {
 
             <div className="form-footer">
               <div className="form-status" aria-live="polite">
-                {DEFAULT_STATUS}
+                {status}
               </div>
-              <button className="form-submit" type="submit">
-                Отправить заявку
+              <button className="form-submit" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Отправляем...' : 'Отправить заявку'}
               </button>
             </div>
           </form>
