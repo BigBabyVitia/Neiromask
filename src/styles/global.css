@@ -1060,6 +1060,11 @@ h3 {
   aspect-ratio: 1 / 1;
   min-height: 460px;
   border-radius: 28px;
+  /* min-height + aspect-ratio derives a width (460px here) that ignores the grid
+     track and overflows when the column is narrower than that — on phones AND on
+     desktop widths ~861–966px where each 1fr column drops below 460px. Clamp the
+     width to the column so the silk card never bleeds past the viewport. */
+  max-width: 100%;
 }
 /* тёплый кремовый веер поверх шейдера: жёлтый доминирует, синий — акценты
    (референс тёплый, а голый шейдер местами ловит синие кадры) */

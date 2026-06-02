@@ -28,7 +28,9 @@ const items = [0, 1, 2, 3];
       margin: 0;
       padding: 14px 22px;
       display: flex;
-      flex-wrap: nowrap;
+      /* wrap (not nowrap): 4 nowrap badges overflow ~768px and force horizontal
+         scroll on tablet; wrapping keeps one row on desktop, wraps when it can't. */
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 12px 26px;
@@ -53,13 +55,16 @@ const items = [0, 1, 2, 3];
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    @media (max-width: 560px) {
+    /* tablet + phone: the row wraps to 2 lines, so trade the stadium pill for a
+       rounded card and tighten the gaps. */
+    @media (max-width: 860px) {
       .trust-row {
-        flex-wrap: wrap;
         border-radius: 18px;
         gap: 10px 16px;
         padding: 14px 16px;
       }
+    }
+    @media (max-width: 560px) {
       .trust-item {
         font-size: 13px;
       }
