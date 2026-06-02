@@ -1,5 +1,7 @@
 ---
 // Блок 2 — мок «Интерфейс НейроМаск» (был внутри старого CTA-блока).
+import { t } from '../copy';
+
 const meters: [string, string][] = [
   ['18', 'найдено персональных данных'],
   ['12', 'замаскировано'],
@@ -17,11 +19,8 @@ const rules: [string, 'mask' | 'block' | 'allow'][] = [
 <section class="section" id="console">
   <div class="section-head">
     <span class="aj-chip">P</span>
-    <h2>Интерфейс НейроМаск</h2>
-    <p>
-      Панель для ИБ и владельца сценария: какие сущности найдены, какое правило применено и что ушло
-      во внешнюю API-модель.
-    </p>
+    <h2 data-copy="cm.h2">{t('cm.h2')}</h2>
+    <p data-copy="cm.lead">{t('cm.lead')}</p>
   </div>
 
   <div class="console-mock" aria-label="Интерфейс системы маскирования">

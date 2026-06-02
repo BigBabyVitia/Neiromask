@@ -1,40 +1,21 @@
 ---
-const fits = [
-  'документы, сканы, PDF, DOCX и архивы файлов;',
-  'договоры, акты, претензии, клиентские обращения;',
-  'тикеты поддержки, CRM-выгрузки, базы знаний;',
-  'HR, финансы и операционные документы как вторичные сценарии.',
-];
+import { t } from '../copy';
 
-const notFits = [
-  'не плагин для личного ChatGPT или Codex;',
-  'не универсальная гарантия комплаенса для любых данных;',
-  'не замена DLP и юридической проверки;',
-  'не основной продукт для программирования или работы с кодом.',
-];
+const fits = [0, 1, 2, 3];
 ---
 
 <section class="section aj-small" id="fit">
   <div class="section-head">
     <span class="aj-chip">S</span>
-    <h2>Где НейроМаск работает лучше всего</h2>
-    <p>
-      Продукт нужен там, где AI уже полезен, но рабочие материалы содержат персональные данные, реквизиты,
-      договорные условия или внутренние идентификаторы.
-    </p>
+    <h2 data-copy="fit.h2">{t('fit.h2')}</h2>
+    <p data-copy="fit.lead">{t('fit.lead')}</p>
   </div>
 
-  <div class="fit-grid">
+  <div class="fit-grid fit-grid--single">
     <article class="fit-card">
-      <h3>Подходит</h3>
-      <ul>
-        {fits.map((f) => <li>{f}</li>)}
-      </ul>
-    </article>
-    <article class="fit-card no">
-      <h3>Не позиционируем так</h3>
-      <ul>
-        {notFits.map((f) => <li>{f}</li>)}
+      <h3 data-copy="fit.fitsTitle">{t('fit.fitsTitle')}</h3>
+      <ul class="fit-cols">
+        {fits.map((i) => <li data-copy={`fit.fits.${i}`}>{t(`fit.fits.${i}`)}</li>)}
       </ul>
     </article>
   </div>
@@ -43,4 +24,26 @@ const notFits = [
     <span class="aj-key s">S</span>
     <span><strong>Ограничение обещания:</strong> основной сценарий — API-модели и корпоративный контур, а не личные аккаунты сотрудников.</span>
   </div>
+
+  <style>
+    /* Один позитивный столбец «подходит» — границы продукта вынесены в Objections. */
+    .fit-grid--single {
+      grid-template-columns: 1fr;
+      max-width: 760px;
+      margin-inline: auto;
+    }
+    .fit-grid--single .fit-cols {
+      columns: 2;
+      column-gap: 28px;
+    }
+    .fit-grid--single .fit-cols li {
+      break-inside: avoid;
+      margin-bottom: 6px;
+    }
+    @media (max-width: 560px) {
+      .fit-grid--single .fit-cols {
+        columns: 1;
+      }
+    }
+  </style>
 </section>

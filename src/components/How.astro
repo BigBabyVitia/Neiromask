@@ -1,37 +1,13 @@
 ---
 import FlowScene from './FlowScene.astro';
+import { t } from '../copy';
 
 const steps = [
-  {
-    n: 1,
-    title: 'Запрос или документ',
-    text: 'Пользователь, агент или внутренний сервис отправляет файл, скан, тикет или текст задачи.',
-    tag: 'Вход',
-  },
-  {
-    n: 2,
-    title: 'Поиск сущностей',
-    text: 'НейроМаск находит ФИО, телефоны, email, паспорта, реквизиты, номера договоров и другие чувствительные поля.',
-    tag: 'Детектор PII',
-  },
-  {
-    n: 3,
-    title: 'Правило обработки',
-    text: 'Для каждого сценария применяется действие: замаскировать, заблокировать или разрешить отправку.',
-    tag: 'Политики',
-  },
-  {
-    n: 4,
-    title: 'API-модель',
-    text: 'Во внешнюю LLM уходит обезличенный запрос с плейсхолдерами вместо реальных персональных данных.',
-    tag: 'Обезличивание',
-  },
-  {
-    n: 5,
-    title: 'Ответ и аудит',
-    text: 'Ответ возвращается в Нейроключ, данные восстанавливаются, событие остаётся в журнале.',
-    tag: 'Нейроключ · Журнал',
-  },
+  { n: 1, tag: 'Вход' },
+  { n: 2, tag: 'Детектор PII' },
+  { n: 3, tag: 'Политики' },
+  { n: 4, tag: 'Обезличивание' },
+  { n: 5, tag: 'Нейроключ · Журнал' },
 ];
 ---
 
@@ -39,11 +15,8 @@ const steps = [
   <div class="section aj-big">
     <div class="section-head">
       <span class="aj-chip">B</span>
-      <h2>Пять шагов от чувствительного документа до безопасного ответа</h2>
-      <p>
-        Маршрут должен быть понятнее интерфейса: сначала правила и маскирование, затем внешняя
-        API-модель, потом восстановленный ответ внутри Нейроключа.
-      </p>
+      <h2 data-copy="how.h2">{t('how.h2')}</h2>
+      <p data-copy="how.lead">{t('how.lead')}</p>
     </div>
 
     <div class="flow-stack">
@@ -57,7 +30,7 @@ const steps = [
           <article class={`flow-card flow-card--${i % 2 === 0 ? 'left' : 'right'}`}>
             <header class="flow-card__head">
               <span class="flow-card__num">{String(s.n).padStart(2, '0')}</span>
-              <h3 class="flow-card__title">{s.title}</h3>
+              <h3 class="flow-card__title" data-copy={`how.steps.${i}.title`}>{t(`how.steps.${i}.title`)}</h3>
             </header>
 
             <div class="flow-card__stage" data-step={s.n}>
@@ -67,7 +40,7 @@ const steps = [
             <footer class="flow-card__foot">
               <span class="flow-card__icon" aria-hidden="true" />
               <span class="flow-card__tag">{s.tag}</span>
-              <p class="flow-card__text">{s.text}</p>
+              <p class="flow-card__text" data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
             </footer>
           </article>
         ))

@@ -5,6 +5,8 @@
 // с морф-анимацией (cross-fade + blur) у каждого токена.
 // Безопасный/маскированный акцент — синий, сырые ПДн — красный.
 
+import { t } from '../copy';
+
 type Pii = { type: string; raw: string; mask: string };
 
 const columns: Pii[][] = [
@@ -55,37 +57,32 @@ const columns: Pii[][] = [
   <div class="section-head">
     <span class="aj-chip">B</span>
     <h2 class="ex-head">
-      <span class="aj-mark aj-mark-value" data-aj="V">Смысл документов сохраняется</span>.<br />
+      <span data-copy="example.h2a">{t('example.h2a')}</span>.<br />
       <span class="ex-head-row">
-        <span class="aj-mark aj-mark-big" data-aj="B">Персональные данные скрыты</span>
+        <span data-copy="example.h2b">{t('example.h2b')}</span>
         <label class="ex-switch" title="Маскирование персональных данных">
           <input type="checkbox" checked data-ex-toggle aria-label="Маскирование персональных данных" />
           <span class="ex-track"><span class="ex-thumb"></span></span>
         </label>
       </span>
     </h2>
-    <p>
-      Пример для договоров и сканов: внешняя модель получает задачу и структуру документа, но не
-      видит реальные персональные данные и номера.
-    </p>
+    <p data-copy="example.lead">{t('example.lead')}</p>
   </div>
 
   <div class="ex-stage">
     <div class="ex-stream is-masked" data-ex-stream aria-hidden="true">
     {
-      columns.map((items, ci) => (
+      columns.map((items) => (
         <div class="ex-col">
-          <div class="ex-col-track" style={`--dur:${20 + ci * 3}s`}>
-            {[0, 1].map(() =>
-              items.map((c) => (
-                <div class="ex-chip">
-                  <span class="pii">
-                    <span class="raw">{c.raw}</span>
-                    <span class="mask">{c.mask}</span>
-                  </span>
-                </div>
-              ))
-            )}
+          <div class="ex-col-track" data-ex-track>
+            {items.map((c) => (
+              <div class="ex-chip">
+                <span class="pii">
+                  <span class="raw">{c.raw}</span>
+                  <span class="mask">{c.mask}</span>
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       ))
@@ -179,28 +176,29 @@ const columns: Pii[][] = [
   .ex-col-track {
     display: flex;
     flex-flow: column;
-    gap: 14px;
-    animation: ex-scroll var(--dur, 24s) linear infinite;
     will-change: transform;
   }
-  .ex-col:nth-child(even) .ex-col-track {
+  /* анимация включается только после того, как JS заполнил колонку клонами
+     и вычислил точный шаг (--shift = высота одного набора токенов) */
+  .ex-stream.ex-ready .ex-col-track {
+    animation: ex-scroll var(--dur, 24s) linear infinite;
+  }
+  .ex-stream.ex-ready .ex-col:nth-child(even) .ex-col-track {
     animation-direction: reverse;
   }
+  /* сдвиг ровно на один набор → точка стыка невидима, петля бесшовная */
   @keyframes ex-scroll {
     to {
-      transform: translateY(-50%);
+      transform: translateY(calc(var(--shift, 0px) * -1));
     }
   }
-  @media (hover: hover) {
-    .ex-stream:hover .ex-col-track {
-      animation-play-state: paused;
-    }
-  }
-
   /* чип данных */
+  /* gap = trailing margin (не flex gap), чтобы клонированные наборы стыковались
+     без шва: высота набора = N×(chip+margin) = ровно один период анимации */
   .ex-chip {
     flex: none;
     padding: 4px 2px;
+    margin-bottom: 14px;
   }
 
   /* токен: два слоя в одной грид-ячейке → ширина = max, без сдвигов */
@@ -284,11 +282,49 @@ const columns: Pii[][] = [
 </style>
 
 <script>
+  // Бесконечный вертикальный прокрут: меряем высоту одного набора токенов,
+  // клонируем набор столько раз, чтобы трек всегда перекрывал видимую область,
+  // и сдвигаем ровно на один набор (--shift) → стык невидим, «конца списка» нет.
+  function buildColumn(track: HTMLElement, viewport: number, ci: number) {
+    // базовый набор фиксируем один раз (исходные SSR-чипы)
+    if (!track.dataset.baseHtml) track.dataset.baseHtml = track.innerHTML;
+    const baseHtml = track.dataset.baseHtml;
+
+    // меряем один набор
+    track.innerHTML = baseHtml;
+    const setHeight = track.scrollHeight;
+    if (!setHeight) return; // колонка скрыта (display:none на мобиле) — пропуск
+
+    // (копий−1) наборов должны перекрывать окно при сдвиге на один набор
+    const copies = Math.max(2, Math.ceil(viewport / setHeight) + 1);
+    track.innerHTML = baseHtml.repeat(copies);
+
+    track.style.setProperty('--shift', setHeight + 'px');
+    const SPEED = 13; // px/с — постоянная видимая скорость независимо от высоты
+    const dur = (setHeight / SPEED) * (1 + ci * 0.15);
+    track.style.setProperty('--dur', dur.toFixed(2) + 's');
+  }
+
   function initExampleStream() {
     const stream = document.querySelector<HTMLElement>('[data-ex-stream]');
     const toggle = document.querySelector<HTMLInputElement>('[data-ex-toggle]');
     if (!stream || !toggle || stream.dataset.exInit) return;
     stream.dataset.exInit = '1';
+
+    const tracks = Array.from(stream.querySelectorAll<HTMLElement>('[data-ex-track]'));
+    const build = () => {
+      const vp = stream.clientHeight || 380;
+      tracks.forEach((tr, i) => buildColumn(tr, vp, i));
+      stream.classList.add('ex-ready');
+    };
+    build();
+
+    // пересборка при ресайзе: меняется высота сцены и набор видимых колонок
+    let rt: ReturnType<typeof setTimeout> | null = null;
+    window.addEventListener('resize', () => {
+      if (rt) clearTimeout(rt);
+      rt = setTimeout(build, 200);
+    });
 
     const sync = () => stream.classList.toggle('is-masked', toggle.checked);
 

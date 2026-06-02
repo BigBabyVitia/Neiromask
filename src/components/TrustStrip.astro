@@ -1,0 +1,68 @@
+---
+// Тонкая полоса доверия над заголовком hero: знаки контроля над h1.
+import { t } from '../copy';
+
+const items = [0, 1, 2, 3];
+---
+
+<div class="trust-strip" aria-label="Контроль и соответствие">
+  <ul class="trust-row">
+    {
+      items.map((i) => (
+        <li class="trust-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+          <span data-copy={`trust.${i}`}>{t(`trust.${i}`)}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <style>
+    .trust-strip {
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: center;
+    }
+    .trust-row {
+      list-style: none;
+      margin: 0;
+      padding: 14px 22px;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px 26px;
+      border-radius: 999px;
+      background: var(--color-surface);
+    }
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-ink);
+      white-space: nowrap;
+    }
+    .trust-item svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: var(--color-brand-strong, #1e50d6);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @media (max-width: 560px) {
+      .trust-row {
+        flex-wrap: wrap;
+        border-radius: 18px;
+        gap: 10px 16px;
+        padding: 14px 16px;
+      }
+      .trust-item {
+        font-size: 13px;
+      }
+    }
+  </style>
+</div>

@@ -1,6 +1,5 @@
 ---
 import MobileNav from './islands/MobileNav.tsx';
-import SilkBg from './SilkBg.astro';
 
 const links = [
   { href: '#problem', label: 'Проблема' },
@@ -11,16 +10,12 @@ const links = [
 ];
 ---
 
-<header class="nav-header sticky top-0 z-30" id="site-header" data-scrolled="false">
+<header class="nav-header sticky top-0 z-30" id="site-header" data-scrolled="false" data-mode="full">
   <div class="nav-bar">
     <div class="nav-side nav-side--left">
       <a class="nav-logo" href="#top">
-        <span class="logo-mark silk-grad silk-grad--deep" aria-hidden="true">
-          <SilkBg variant="deep" />
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6l7-3z" />
-            <path d="M9 12l2 2 4-4" />
-          </svg>
+        <span class="logo-mark" aria-hidden="true">
+          <img class="logo-shield" src="/logo-shield.svg" alt="" width="36" height="36" />
         </span>
         <span class="nav-logo-name">НейроМаск</span>
       </a>

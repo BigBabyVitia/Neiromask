@@ -1,41 +1,15 @@
 ---
-const risks = [
-  {
-    n: 1,
-    label: 'Потребность уже есть',
-    title: 'Сотрудники используют LLM в рабочих задачах',
-    text: 'Запрет не убирает пользу нейросетей. Он часто уводит работу в личные инструменты и серую зону.',
-  },
-  {
-    n: 2,
-    label: 'Данные без обработки',
-    title: 'Персональные данные и реквизиты попадают в запрос',
-    text: 'Тикеты, сканы, договоры и выгрузки содержат чувствительные фрагменты почти на каждой странице.',
-  },
-  {
-    n: 3,
-    label: 'Ручная чистка',
-    title: 'Обезличивание руками не масштабируется',
-    text: 'Чем больше документов и сканов, тем дороже проверять каждый фрагмент до работы с AI.',
-  },
-];
+import { t } from '../copy';
 
-const needs = [
-  'Нужны правила: что можно отправить, что замаскировать, что заблокировать.',
-  'Нужен журнал: кто отправлял, какие сущности найдены, какое действие применено.',
-  'Нужен результат: LLM должна сохранить смысл задачи после маскирования.',
-];
+const risks = [0, 1, 2];
 ---
 
 <section class="band aj-big" id="problem">
   <div class="section intro">
     <div class="intro-head">
       <span class="aj-chip">B</span>
-      <h2><span class="aj-mark aj-mark-anxiety" data-aj="A">Утечка персональных данных во внешние LLM</span> — ответственность компании.</h2>
-      <p class="lead mt-5 max-w-[760px] mx-auto">
-        Бизнесу нужны нейросети для документов и обращений, но отправка реальных ФИО, телефонов,
-        паспортов и договоров во внешнюю модель создаёт риск по 152-ФЗ.
-      </p>
+      <h2 data-copy="problem.h2">{t('problem.h2')}</h2>
+      <p class="lead mt-5 max-w-[760px] mx-auto" data-copy="problem.lead">{t('problem.lead')}</p>
       <div class="aj-note">
         <span class="aj-key">B</span>
         <span><strong>Большая работа:</strong> дать сотрудникам AI-инструмент и не превратить каждый документ в риск утечки.</span>
@@ -44,24 +18,13 @@ const needs = [
 
     <div class="risk-row">
       {
-        risks.map((r) => (
+        risks.map((i) => (
           <div class="risk-box">
-            <strong>{r.title}</strong>
-            <p>{r.text}</p>
+            <strong data-copy={`problem.risks.${i}.title`} style="white-space: pre-line">{t(`problem.risks.${i}.title`)}</strong>
+            <p data-copy={`problem.risks.${i}.text`}>{t(`problem.risks.${i}.text`)}</p>
           </div>
         ))
       }
     </div>
-
-    <ul class="bullets">
-      {
-        needs.map((n) => (
-          <li>
-            <span class="dot" />
-            <span>{n}</span>
-          </li>
-        ))
-      }
-    </ul>
   </div>
 </section>

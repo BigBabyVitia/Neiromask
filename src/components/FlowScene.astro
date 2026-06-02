@@ -1,8 +1,9 @@
 ---
 // Анимированные изометрические сцены-вайрфреймы для блока «Пять шагов».
-// Одна сцена на шаг (1..5). Единый стиль: тёмная сцена, тонкие линии,
-// синий бренд-акцент, моно-подписи, пунктирный «пол». Анимация — CSS
-// (см. global.css, блок «How scenes»), отключается в prefers-reduced-motion.
+// Одна сцена на шаг (1..5). Единый стиль: кремовая сцена, графитовые
+// тонкие линии, синий бренд-акцент только на ключевом объекте, моно-
+// подписи, пунктирный «пол». Анимация — CSS (см. global.css, блок «How
+// scenes»), отключается в prefers-reduced-motion.
 interface Props {
   step: number;
 }
@@ -80,17 +81,6 @@ const g1 = Ground(1.5, 1.5);
         <polyline class="fs-edge fs-acc" points={line(0.85, 1.25, 1.49, 1.9, 1.25, 1.49)} />
         <polyline class="fs-edge" points={line(0.85, 1.55, 1.49, 2.0, 1.55, 1.49)} />
       </g>
-      {/* размерный тег */}
-      <g class="fs-tag" transform="translate(232 56)">
-        <rect class="fs-chip" x="0" y="0" width="46" height="16" rx="3" />
-        <text class="fs-label" x="8" y="11">DOC · 1</text>
-      </g>
-      </g>
-      {/* подпись */}
-      <g transform="translate(14 178)">
-        <rect class="fs-chip" x="0" y="0" width="56" height="15" rx="3" />
-        <circle class="fs-led" cx="9" cy="7.5" r="2.6" />
-        <text class="fs-label" x="17" y="10.5">ВХОД</text>
       </g>
     </svg>
   )
@@ -128,12 +118,6 @@ const g1 = Ground(1.5, 1.5);
         <polyline class="fs-beam" points={line(0.4, 0.4, 0.18, 2.6, 0.4, 0.18)} />
         <polyline class="fs-beam" points={line(0.4, 0.4, 0.18, 0.4, 2.6, 0.18)} />
       </g>
-      </g>
-      {/* подпись */}
-      <g transform="translate(14 178)">
-        <rect class="fs-chip" x="0" y="0" width="82" height="15" rx="3" />
-        <circle class="fs-led fs-blink" cx="9" cy="7.5" r="2.6" />
-        <text class="fs-label" x="17" y="10.5">DETECT · PII</text>
       </g>
     </svg>
   )
@@ -180,12 +164,6 @@ const g1 = Ground(1.5, 1.5);
       <circle class="fs-tok fs-tok2" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 1.25, 2.75, 0.55)}`} />
       <circle class="fs-tok fs-tok3" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 2.65, 1.85, 0.55)}`} />
       </g>
-      {/* подпись */}
-      <g transform="translate(14 178)">
-        <rect class="fs-chip" x="0" y="0" width="66" height="15" rx="3" />
-        <circle class="fs-led" cx="9" cy="7.5" r="2.6" />
-        <text class="fs-label" x="17" y="10.5">POLICY</text>
-      </g>
     </svg>
   )
 }
@@ -215,21 +193,12 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.4, 0, 1.4, 1.4, 1.1).l} />
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.4, 0, 1.4, 1.4, 1.1).r} />
       </g>
-      <g transform={`translate(${Pn(3.7, 1.1, 1.45)[0]} ${Pn(3.7, 1.1, 1.45)[1]})`}>
-        <text class="fs-label fs-mid" x="0" y="0">LLM</text>
-      </g>
       {/* обезличенный пакет, идущий наружу */}
       <g class="fs-packet" style={`${delta(1.0, 1.1, 1.25, 3.4, 1.1, 1.25)}`}>
         <polygon class="fs-acc-face" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).top} />
         <polygon class="fs-face fs-acc" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).l} />
         <polygon class="fs-face fs-acc" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).r} />
       </g>
-      </g>
-      {/* подпись */}
-      <g transform="translate(14 178)">
-        <rect class="fs-chip" x="0" y="0" width="92" height="15" rx="3" />
-        <circle class="fs-led fs-blink" cx="9" cy="7.5" r="2.6" />
-        <text class="fs-label" x="17" y="10.5">API · MASKED</text>
       </g>
     </svg>
   )
@@ -275,12 +244,6 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.4, 1.5, 0.55, 0.14).r} />
         <path class="fs-check" d={`M ${Pn(-0.45, 1.78, 0.55).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
       </g>
-      </g>
-      {/* подпись */}
-      <g transform="translate(14 178)">
-        <rect class="fs-chip" x="0" y="0" width="108" height="15" rx="3" />
-        <circle class="fs-led" cx="9" cy="7.5" r="2.6" />
-        <text class="fs-label" x="17" y="10.5">RESTORE · LOG</text>
       </g>
     </svg>
   )
