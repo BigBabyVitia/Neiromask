@@ -247,15 +247,23 @@
     background: color-mix(in srgb, var(--color-shade) 70%, transparent);
   }
   
-  .nav-pill {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-surface) 74%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-line) 82%, transparent);
-    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+  /* mobile burger — solid primary (ink) icon button, matches .nav-cta/.btn.
+     No drop shadow (the old frosted pill's 0 14px 40px read as a stray blob). */
+  .nav-burger {
+    border: 1px solid var(--color-ink);
+    border-radius: 12px;
+    background: var(--color-ink);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-burger:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+  }
+  .nav-burger:active {
+    transform: translateY(0);
   }
   /* CTA: solid black */
   .nav-cta {

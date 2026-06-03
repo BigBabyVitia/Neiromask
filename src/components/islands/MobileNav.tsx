@@ -15,21 +15,21 @@ export default function MobileNav({ links }: { links: NavLink[] }) {
         aria-label="Открыть меню"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="nav-pill grid h-[52px] w-[52px] place-items-center text-ink"
+        className="nav-burger grid h-11 w-11 place-items-center"
       >
         <svg
           viewBox="0 0 24 24"
-          width="22"
-          height="22"
+          width="20"
+          height="20"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <line x1="4" y1="7" x2="20" y2="7" />
-          <line x1="4" y1="12" x2="20" y2="12" />
-          <line x1="4" y1="17" x2="20" y2="17" />
+          <line x1="5" y1="7.5" x2="19" y2="7.5" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <line x1="5" y1="16.5" x2="19" y2="16.5" />
         </svg>
       </button>
 
