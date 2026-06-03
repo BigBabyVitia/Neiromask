@@ -208,6 +208,12 @@
     box-shadow: none;
     overflow: hidden;
     transition: none;
+    /* The scrolled-state backdrop-filter (frosted-island variant) must NOT apply
+       here: a non-none backdrop-filter makes .nav-bar a containing block for the
+       fixed mobile-menu overlay, which then anchors to (and is clipped by) the
+       53px bar instead of the viewport — so the menu wouldn't open once scrolled. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .nav-logo {
@@ -275,8 +281,8 @@
     animation: menuIn 0.2s ease;
   }
   @keyframes menuIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   /* Same metrics as the real header bar (.nav-header[data-mode=full] .nav-bar:
      padding 4px 24px + 1px bottom border) so opening the menu doesn't resize
