@@ -1,9 +1,14 @@
-import { useState, type FormEvent } from 'react';
+import { useId, useState, type FormEvent } from 'react';
 import { t } from '../../copy';
 
 const ERROR_STATUS = 'Не получилось отправить заявку. Проверьте контакты или напишите нам напрямую.';
 
 export default function RequestForm() {
+  const uid = useId();
+  const nameId = `${uid}-name`;
+  const emailId = `${uid}-email`;
+  const phoneId = `${uid}-phone`;
+  const deployLabelId = `${uid}-deployment`;
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,9 +57,9 @@ export default function RequestForm() {
       ) : (
         <form className="request-form" onSubmit={handleSubmit}>
           <div className="field">
-            <label htmlFor="rf-name">Имя и компания</label>
+            <label htmlFor={nameId}>Имя и компания</label>
             <input
-              id="rf-name"
+              id={nameId}
               name="name"
               type="text"
               autoComplete="name"
@@ -63,9 +68,9 @@ export default function RequestForm() {
             />
           </div>
           <div className="field">
-            <label htmlFor="rf-email">Рабочий email</label>
+            <label htmlFor={emailId}>Рабочий email</label>
             <input
-              id="rf-email"
+              id={emailId}
               name="email"
               type="email"
               autoComplete="email"
@@ -74,23 +79,23 @@ export default function RequestForm() {
             />
           </div>
           <div className="field">
-            <label htmlFor="rf-phone">Телефон</label>
+            <label htmlFor={phoneId}>Телефон</label>
             <input
-              id="rf-phone"
+              id={phoneId}
               name="phone"
               type="tel"
               autoComplete="tel"
               placeholder="+7 999 000-00-00"
             />
           </div>
-          <div className="field deploy-field" role="radiogroup" aria-labelledby="rf-deployment-label">
-            <span className="field-label" id="rf-deployment-label">
+          <div className="field deploy-field" role="radiogroup" aria-labelledby={deployLabelId}>
+            <span className="field-label" id={deployLabelId}>
               Формат развёртывания
             </span>
             <div className="deploy-options">
               <label>
                 <input type="radio" name="deployment" value="on-premise" defaultChecked />
-                <span>On-premise</span>
+                <span>На вашем сервере</span>
               </label>
               <label>
                 <input type="radio" name="deployment" value="cloud" />

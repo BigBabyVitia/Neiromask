@@ -7,6 +7,8 @@ import Problem from '../components/Problem.astro';
 import Needs from '../components/Needs.astro';
 import ThirdPath from '../components/ThirdPath.astro';
 import How from '../components/How.astro';
+import HowB from '../components/HowB.astro';
+import BlockVariant from '../components/BlockVariant.astro';
 import Policies from '../components/Policies.astro';
 import Example from '../components/Example.astro';
 import Features from '../components/Features.astro';
@@ -21,17 +23,55 @@ import Footer from '../components/Footer.astro';
 <Layout>
   <Nav />
   <main>
-    <Hero />
+    <BlockVariant block="hero" variant="a"><Hero /></BlockVariant>
+    <BlockVariant block="hero" variant="b"
+      ><Hero
+        h1="Сторонние AI на реальных документах — без передачи персональных данных"
+        lead="НейроМаск маскирует ФИО, телефоны, паспорта и реквизиты ещё до того, как запрос уйдёт в стороннюю нейросеть. Модель видит обезличенный текст — а вы получаете обычный ответ с настоящими данными на месте."
+      /></BlockVariant
+    >
+    <BlockVariant block="hero" variant="c"
+      ><Hero
+        h1="Используйте внешние нейросети на реальных документах — данные останутся у вас"
+        lead="НейроМаск прячет персональные данные до отправки в стороннюю модель. Смысл запроса сохраняется, ответ возвращается в ваш контур — с настоящими ФИО и реквизитами на месте."
+      /></BlockVariant
+    >
+    <BlockVariant block="hero" variant="d"
+      ><Hero
+        h1="Реальные документы во внешнем AI — и ни одного ПДн наружу"
+        lead="ФИО, паспорта, телефоны и реквизиты НейроМаск заменяет масками ещё до запроса в стороннюю нейросеть. Модель работает с обезличенным текстом, вы — с настоящими данными."
+      /></BlockVariant
+    >
+    <BlockVariant block="hero" variant="e"
+      ><Hero
+        wide
+        h1="Маскируем персональные данные<br>до отправки в нейросеть"
+        lead="ФИО, телефоны и реквизиты уходят в стороннюю модель уже скрытыми.<br>Смысл запроса остаётся прежним, а ответ НейроМаск<br>восстанавливает на вашей стороне."
+      /></BlockVariant
+    >
+    <BlockVariant block="hero" variant="f"
+      ><Hero
+        h1="Сильный AI на ваших документах — без утечки персональных данных"
+        lead="НейроМаск прячет личные данные до того, как запрос покинет ваш контур. Нейросеть отвечает по сути — настоящие ФИО и реквизиты подставляются обратно у вас."
+      /></BlockVariant
+    >
+    <BlockVariant block="hero" variant="g"
+      ><Hero
+        h1="Внешние нейросети на реальных данных — по 152-ФЗ и без рисков"
+        lead="НейроМаск обезличивает ФИО, паспорта и реквизиты до отправки в стороннюю модель. Персональные данные не покидают контур, а ответ приходит с настоящими данными на месте."
+      /></BlockVariant
+    >
     <KeyVisual />
     <Problem />
     <Needs />
     <ThirdPath />
-    <How />
-    <Policies />
-    <Example />
-    <Pricing />
-    <Features />
     <Fit />
+    <BlockVariant block="how" variant="a"><How /></BlockVariant>
+    <BlockVariant block="how" variant="b"><HowB /></BlockVariant>
+    <Example />
+    <Policies />
+    <Features />
+    <Pricing />
     <Scenarios />
     <RequestForm />
     <Objections />

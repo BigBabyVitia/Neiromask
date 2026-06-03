@@ -64,9 +64,27 @@ const items = [0, 1, 2, 3];
         padding: 14px 16px;
       }
     }
+    /* phone: drop the single wrapping row for a tidy 2×2 grid (2 items per
+       column) and nudge the whole strip a bit lower under the nav. */
     @media (max-width: 560px) {
+      .trust-strip {
+        margin-top: 16px;
+        margin-bottom: 32px;
+      }
+      .trust-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 18px;
+        padding: 16px 18px;
+      }
       .trust-item {
         font-size: 13px;
+        align-items: flex-start;
+        white-space: normal; /* long labels wrap inside the narrow column */
+      }
+      .trust-item svg {
+        flex: none;
+        margin-top: 1px; /* keep check aligned with the first text line */
       }
     }
   </style>

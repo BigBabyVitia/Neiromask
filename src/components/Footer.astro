@@ -1,7 +1,54 @@
 ---
+// Site footer — mirrors the WMT sibling site (lichniy-ii): a dark closing band
+// with the copyright line and legal links. One voice, shared across the project.
 import { t } from '../copy';
 ---
 
-<footer class="shell pb-[140px] pt-7 text-sm text-muted" data-copy="footer.text">
-  {t('footer.text')}
+<footer class="site-footer">
+  <div class="site-footer__inner shell">
+    <p class="site-footer__copy" data-copy="footer.copy">{t('footer.copy')}</p>
+    <nav class="site-footer__links" aria-label="Документы">
+      <a href="/privacy" data-copy="footer.privacy">{t('footer.privacy')}</a>
+      <a href="/cookies" data-copy="footer.cookies">{t('footer.cookies')}</a>
+    </nav>
+  </div>
+
+  <style>
+    .site-footer {
+      /* Warm ink (same dark tone as the .btn fill) so the band stays on-brand
+         with the paper palette instead of the sibling's cold #07080c. */
+      background: var(--color-ink);
+      color: rgba(255, 255, 255, 0.55);
+      padding: 40px 0 32px;
+    }
+    .site-footer__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .site-footer__copy {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .site-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+    }
+    .site-footer__links a {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .site-footer__links a:hover,
+    .site-footer__links a:focus-visible {
+      color: #fff;
+    }
+  </style>
 </footer>

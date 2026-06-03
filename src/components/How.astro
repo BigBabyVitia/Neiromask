@@ -4,10 +4,10 @@ import { t } from '../copy';
 
 const steps = [
   { n: 1, tag: 'Вход' },
-  { n: 2, tag: 'Детектор PII' },
-  { n: 3, tag: 'Политики' },
-  { n: 4, tag: 'Обезличивание' },
-  { n: 5, tag: 'Нейроключ · Журнал' },
+  { n: 2, tag: 'Поиск данных' },
+  { n: 3, tag: 'Правила' },
+  { n: 4, tag: 'Замена данных' },
+  { n: 5, tag: 'Ваша зона · Журнал' },
 ];
 ---
 
@@ -33,15 +33,11 @@ const steps = [
               <h3 class="flow-card__title" data-copy={`how.steps.${i}.title`}>{t(`how.steps.${i}.title`)}</h3>
             </header>
 
+            <p class="flow-card__text" data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
+
             <div class="flow-card__stage" data-step={s.n}>
               <FlowScene step={s.n} />
             </div>
-
-            <footer class="flow-card__foot">
-              <span class="flow-card__icon" aria-hidden="true" />
-              <span class="flow-card__tag">{s.tag}</span>
-              <p class="flow-card__text" data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
-            </footer>
           </article>
         ))
       }
