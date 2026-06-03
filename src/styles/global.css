@@ -278,11 +278,8 @@
     display: flex;
     flex-direction: column;
     background: var(--color-surface);
-    animation: menuIn 0.2s ease;
-  }
-  @keyframes menuIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    /* No entrance animation: the opacity fade flashed (element painted opaque for
+       one frame, then the keyframe snapped it to 0 and back) — it just opens. */
   }
   /* Same metrics as the real header bar (.nav-header[data-mode=full] .nav-bar:
      padding 4px 24px + 1px bottom border) so opening the menu doesn't resize
@@ -2208,11 +2205,6 @@ pre {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.policy-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
 }
 .policy-card.mask {
   --acc: #3d6bff;
