@@ -2339,7 +2339,9 @@ pre {
 }
 @media (max-width: 640px) {
   .bento-wrap {
-    padding: 56px 16px 64px;
+    /* 24px side inset to match the site-wide .section padding (was 16px, which
+       made the bento cards sit closer to the edge than every other section). */
+    padding: 56px 24px 64px;
   }
   .bento {
     grid-template-columns: 1fr;
