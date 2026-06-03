@@ -282,13 +282,15 @@
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  /* Same metrics as the real header bar (.nav-header[data-mode=full] .nav-bar:
+     padding 4px 24px + 1px bottom border) so opening the menu doesn't resize
+     or shift the top bar. */
   .mobile-menu__bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     padding: 4px 24px;
-    min-height: 60px;
     border-bottom: 1px solid var(--color-line);
   }
   .mobile-menu__links {
