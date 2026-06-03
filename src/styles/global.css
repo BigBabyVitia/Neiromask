@@ -255,15 +255,11 @@
     background: var(--color-ink);
     color: #fff;
     cursor: pointer;
-    transition: transform 0.18s ease, opacity 0.18s ease;
+    transition: opacity 0.18s ease;
     -webkit-tap-highlight-color: transparent;
   }
   .nav-burger:hover {
-    transform: translateY(-1px);
-    opacity: 0.92;
-  }
-  .nav-burger:active {
-    transform: translateY(0);
+    opacity: 0.9;
   }
 
   /* ---- Mobile menu: full-screen overlay opened by the burger ----
@@ -337,10 +333,9 @@
     font-weight: 600;
     letter-spacing: -0.02em;
     white-space: nowrap;
-    transition: transform 0.18s ease, opacity 0.18s ease;
+    transition: opacity 0.18s ease;
   }
   .nav-cta:hover {
-    transform: translateY(-1px);
     opacity: 0.9;
   }
 
