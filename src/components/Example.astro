@@ -270,6 +270,15 @@ const columns: Pii[][] = [
     .ex-stream {
       height: 320px;
     }
+    /* На узких экранах длинный заголовок + свитч не помещаются в строку, и свитч
+       повисал криво сбоку. Кладём его отдельной центрированной строкой под
+       текстом — читается как «в конце заголовка». */
+    .ex-head-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .ex-col-track {
