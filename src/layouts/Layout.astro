@@ -8,8 +8,9 @@ interface Props {
   description?: string;
 }
 
-// Панель версий блоков нужна для демонстрации вариантов прямо на лендинге.
-const showBlockDock = true;
+// Панель версий блоков нужна только для локального просмотра.
+// Варианты сохранены в stores/variants.ts как архив, но в production/Vercel dock не рендерится.
+const showBlockDock = import.meta.env.DEV;
 
 const {
   title = 'НейроМаск — маскирование персональных данных для LLM по API',

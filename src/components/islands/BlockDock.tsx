@@ -1,11 +1,14 @@
 import { useStore } from '@nanostores/react';
 import { useState } from 'react';
-import { $variants, blocks, setVariant, resetVariants } from '../../stores/variants';
+import { $variants, blocks, setVariant, resetVariants, visibleVariants } from '../../stores/variants';
 
 /** Нижняя панель: переключатель версий блоков (dev/презентация). */
 export default function BlockDock() {
   const state = useStore($variants);
   const [open, setOpen] = useState(false);
+  const visibleBlocks = blocks
+    .map((block) => ({ ...block, variants: visibleVariants(block) }))
+    .filter((block) => block.variants.length > 0);
 
   if (!open) {
     return (
@@ -37,10 +40,10 @@ export default function BlockDock() {
       </div>
 
       <div className="blockdock-list">
-        {blocks.length === 0 && (
+        {visibleBlocks.length === 0 && (
           <p className="blockdock-empty">Пока нет блоков с версиями. Добавь их в stores/variants.ts.</p>
         )}
-        {blocks.map((b) => {
+        {visibleBlocks.map((b) => {
           const active = state[b.id] ?? b.variants[0]?.id;
           return (
             <div className="blockdock-row" key={b.id}>
