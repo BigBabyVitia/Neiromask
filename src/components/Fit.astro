@@ -1,7 +1,19 @@
 ---
 import { t } from '../copy';
 
-const fits = [0, 1, 2, 3];
+// 4 категории материалов, где НейроМаск уместен — компактное саммари над детальным
+// бенто (#usecases). Тон-плашки (b/s/p) повторяют буквенную систему сайта.
+// Текст берётся из copy.ts.
+const fits = [
+  { i: 0, icon: 'docs', tone: 'b' },
+  { i: 1, icon: 'contracts', tone: 'b' },
+  { i: 2, icon: 'support', tone: 's' },
+  { i: 3, icon: 'ops', tone: 'p' },
+];
+
+// Текст в copy.ts оформлен как пункты списка (хвостовые «;» / «.»); в карточках
+// они лишние.
+const clean = (s: string) => s.replace(/[;.]\s*$/, '');
 ---
 
 <section class="section aj-small" id="fit">
@@ -11,13 +23,43 @@ const fits = [0, 1, 2, 3];
     <p data-copy="fit.lead">{t('fit.lead')}</p>
   </div>
 
-  <div class="fit-grid fit-grid--single">
-    <article class="fit-card">
-      <h3 data-copy="fit.fitsTitle">{t('fit.fitsTitle')}</h3>
-      <ul class="fit-cols">
-        {fits.map((i) => <li data-copy={`fit.fits.${i}`}>{t(`fit.fits.${i}`)}</li>)}
-      </ul>
-    </article>
+  <div class="fit-cards">
+    {
+      fits.map((f) => (
+        <article class={`fit-cat fit-cat--${f.tone}`}>
+          <span class="fit-cat__icon" aria-hidden="true">
+            {f.icon === 'docs' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z" />
+                <path d="M13 3v5h5" />
+                <path d="M9.5 13h5M9.5 16.5h5" />
+              </svg>
+            )}
+            {f.icon === 'contracts' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8z" />
+                <path d="M13 3v5h5" />
+                <path d="M9.4 14.6l1.8 1.8 3.4-3.8" />
+              </svg>
+            )}
+            {f.icon === 'support' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 13a2 2 0 0 1-2 2H9l-4 4V6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2z" />
+                <path d="M9 9.5h6M9 12.5h4" />
+              </svg>
+            )}
+            {f.icon === 'ops' && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 4v16h15" />
+                <rect x="8.5" y="11.5" width="3" height="5.5" rx="1" />
+                <rect x="14" y="7.5" width="3" height="9.5" rx="1" />
+              </svg>
+            )}
+          </span>
+          <p class="fit-cat__text" data-copy={`fit.fits.${f.i}`}>{clean(t(`fit.fits.${f.i}`))}</p>
+        </article>
+      ))
+    }
   </div>
 
   <div class="aj-note">
@@ -26,23 +68,60 @@ const fits = [0, 1, 2, 3];
   </div>
 
   <style>
-    /* Один позитивный столбец «подходит» — границы продукта вынесены в Objections. */
-    .fit-grid--single {
-      grid-template-columns: 1fr;
-      max-width: 760px;
-      margin-inline: auto;
+    .fit-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin: 36px auto 0;
     }
-    .fit-grid--single .fit-cols {
-      columns: 2;
-      column-gap: 28px;
+    .fit-cat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 22px 20px;
+      border-radius: 14px;
+      /* едва-серая поверхность (токен проекта, осветлён к белому), без обводки */
+      background: color-mix(in srgb, var(--color-shade) 50%, var(--color-surface));
     }
-    .fit-grid--single .fit-cols li {
-      break-inside: avoid;
-      margin-bottom: 6px;
+    .fit-cat__icon {
+      flex: none;
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      /* тон b — синяя бренд-плашка (как aj-key) */
+      background: #e8eeff;
+      color: #1e50d6;
+    }
+    .fit-cat__icon svg {
+      width: 21px;
+      height: 21px;
+    }
+    .fit-cat--s .fit-cat__icon {
+      background: #eff0ff;
+      color: #5754c6;
+    }
+    .fit-cat--p .fit-cat__icon {
+      background: #edf8ff;
+      color: #1675a3;
+    }
+    .fit-cat__text {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--color-ink);
+    }
+    @media (max-width: 900px) {
+      .fit-cards {
+        grid-template-columns: 1fr 1fr;
+      }
     }
     @media (max-width: 560px) {
-      .fit-grid--single .fit-cols {
-        columns: 1;
+      .fit-cards {
+        grid-template-columns: 1fr;
       }
     }
   </style>

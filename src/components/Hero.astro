@@ -1,17 +1,34 @@
 ---
 import { t } from '../copy';
 import TrustStrip from './TrustStrip.astro';
+
+interface Props {
+  /** Переопределить H1 (для версий блока). По умолчанию — copy.ts. */
+  h1?: string;
+  /** Переопределить лид. По умолчанию — copy.ts. */
+  lead?: string;
+  /** Шире контейнер H1 — чтобы длинная первая строка не переносилась. */
+  wide?: boolean;
+}
+const { h1 = t('hero.h1'), lead = t('hero.lead'), wide = false } = Astro.props;
 ---
 
-<section class="section pt-24 pb-0" id="top">
+<section class="section pt-24 lg:pt-12 pb-0" id="top">
   <TrustStrip />
 
-  <div class="mx-auto flex max-w-[860px] flex-col items-center text-center">
-    <h1 class="hero-h1" data-copy="hero.h1">{t('hero.h1')}</h1>
+  <div
+    class:list={[
+      'hero-main mx-auto flex flex-col items-center text-center',
+      wide ? 'max-w-[1080px]' : 'max-w-[860px]',
+    ]}
+  >
+    <h1 class="hero-h1" data-copy="hero.h1" set:html={h1}></h1>
 
-    <p class="mx-auto mt-6 max-w-[620px] text-[16px] text-muted" data-copy="hero.lead">
-      {t('hero.lead')}
-    </p>
+    <p
+      class="mx-auto mt-6 max-w-[620px] text-[16px] text-muted"
+      data-copy="hero.lead"
+      set:html={lead}
+    ></p>
 
     <div class="mt-8 flex flex-wrap justify-center gap-3">
       <a class="btn btn--round" href="#request" data-copy="hero.cta">{t('hero.cta')}</a>

@@ -3,6 +3,7 @@
 // Статичные карточки; CTA скроллят к блоку заявки (#request).
 import { t } from '../copy';
 import SilkBg from './SilkBg.astro';
+import NeiroKeyShelf from './NeiroKeyShelf.astro';
 
 const cloudFeats = [0, 1, 2, 3, 4];
 const onpremFeats = [0, 1, 2, 3, 4];
@@ -51,7 +52,7 @@ const onpremFeats = [0, 1, 2, 3, 4];
       <div class="plan">
         <div class="plan-head">
           <span class="plan-name" data-copy="pr.onpremName">{t('pr.onpremName')}</span>
-          <span class="plan-badge plan-badge--soft">On-prem</span>
+          <span class="plan-badge plan-badge--soft">На сервере</span>
         </div>
         <p class="plan-tagline" data-copy="pr.onpremTagline">{t('pr.onpremTagline')}</p>
 
@@ -75,4 +76,6 @@ const onpremFeats = [0, 1, 2, 3, 4];
       <p class="plan-note plan-note--out" data-copy="pr.onpremNote">{t('pr.onpremNote')}</p>
     </div>
   </div>
+
+  <NeiroKeyShelf />
 </section>

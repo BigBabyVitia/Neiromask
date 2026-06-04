@@ -1,0 +1,214 @@
+---
+import FlowScene from './FlowScene.astro';
+import { t } from '../copy';
+
+const steps = [0, 1, 2, 3, 4];
+---
+
+<section class="band" id="how">
+  <div class="section aj-big">
+    <div class="howc-head">
+      <span class="aj-chip">B</span>
+      <h2 data-copy="how.h2">{t('how.h2')}</h2>
+      <p data-copy="how.lead">{t('how.lead')}</p>
+    </div>
+
+    <ol class="howc-timeline" data-howc-timeline>
+      {
+        steps.map((i) => (
+          <li class="howc-item">
+            <div class="howc-marker">
+              <span class="howc-num">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+
+            <div class="howc-copy">
+              <h3 data-copy={`how.steps.${i}.title`}>{t(`how.steps.${i}.title`)}</h3>
+              <p data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
+            </div>
+
+            <div class="howc-stage">
+              <FlowScene step={i + 1} />
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .howc-head {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .howc-head p {
+    max-width: 680px;
+    margin: 16px auto 0;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .howc-timeline {
+    --howc-progress: 0px;
+    position: relative;
+    display: grid;
+    gap: 0;
+    max-width: 980px;
+    margin: 56px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+  .howc-timeline::before {
+    display: none;
+  }
+  .howc-timeline::after {
+    content: "";
+    position: absolute;
+    top: -24px;
+    left: 20px;
+    width: 3px;
+    height: var(--howc-progress);
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--color-brand) 0%, #f4cd6e 56%, var(--color-brand-strong) 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 86%, transparent 100%);
+    pointer-events: none;
+  }
+  .howc-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44px minmax(220px, 300px) minmax(300px, 1fr);
+    gap: 28px 36px;
+    padding: 0 0 128px;
+  }
+  .howc-item:last-child {
+    padding-bottom: 0;
+  }
+  .howc-marker {
+    position: relative;
+    align-self: start;
+    z-index: 2;
+  }
+  .howc-num {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 10px var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-ink);
+    transition: border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .howc-num[data-on="true"] {
+    border-color: color-mix(in srgb, var(--color-brand) 62%, var(--color-line));
+    color: var(--color-brand-strong);
+    box-shadow: 0 0 0 10px var(--color-surface);
+  }
+  .howc-copy {
+    min-width: 0;
+  }
+  .howc-copy h3 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  .howc-copy > p {
+    margin: 12px 0 18px;
+    color: var(--color-muted);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .howc-stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border: 1px solid color-mix(in srgb, var(--color-line) 85%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--color-shade) 34%, var(--color-surface));
+    overflow: hidden;
+    align-self: start;
+  }
+  @media (max-width: 900px) {
+    .howc-timeline::before {
+      display: none;
+    }
+    .howc-timeline::after {
+      top: -22px;
+      left: 18px;
+    }
+    .howc-item {
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 18px;
+    }
+    .howc-num {
+      width: 40px;
+      height: 40px;
+      box-shadow: 0 0 0 8px var(--color-surface);
+    }
+    .howc-copy h3 {
+      font-size: 22px;
+    }
+    .howc-stage {
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 560px) {
+    .howc-stage {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>
+
+<script>
+  const timeline = document.querySelector<HTMLElement>('[data-howc-timeline]');
+  if (timeline) {
+    const nums = Array.from(timeline.querySelectorAll<HTMLElement>('.howc-num'));
+    const items = Array.from(timeline.querySelectorAll<HTMLElement>('.howc-item'));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let ticking = false;
+    const lineTop = -24;
+
+    const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+
+    const paint = () => {
+      ticking = false;
+      const rect = timeline.getBoundingClientRect();
+      if (rect.height <= 0) return;
+      const trigger = window.innerHeight * 0.42;
+      const maxProgress = rect.height - lineTop;
+      const progress = reduce ? 1 : clamp((trigger - rect.top - lineTop) / Math.max(1, maxProgress), 0, 1);
+      const progressPx = progress * maxProgress;
+      timeline.style.setProperty('--howc-progress', `${progressPx.toFixed(1)}px`);
+      const lineEnd = lineTop + progressPx;
+
+      nums.forEach((num, i) => {
+        const item = items[i];
+        const center = (item?.offsetTop ?? 0) + num.offsetHeight / 2;
+        num.dataset.on = lineEnd >= center ? 'true' : 'false';
+      });
+    };
+
+    const requestPaint = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(paint);
+    };
+
+    paint();
+    window.addEventListener('scroll', requestPaint, { passive: true });
+    window.addEventListener('resize', requestPaint);
+
+    const variantRoot = timeline.closest<HTMLElement>('[data-block][data-variant]');
+    if (variantRoot) {
+      new MutationObserver(requestPaint).observe(variantRoot, { attributes: true, attributeFilter: ['style'] });
+    }
+  }
+</script>

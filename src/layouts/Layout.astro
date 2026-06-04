@@ -1,10 +1,15 @@
 ---
 import '../styles/global.css';
+import BlockDock from '../components/islands/BlockDock.tsx';
+import RequestModal from '../components/islands/RequestModal.tsx';
 
 interface Props {
   title?: string;
   description?: string;
 }
+
+// Панель версий блоков — только в dev или при PUBLIC_BLOCKS=1 (не в проде).
+const showBlockDock = import.meta.env.DEV || import.meta.env.PUBLIC_BLOCKS;
 
 const {
   title = 'НейроМаск — маскирование персональных данных для LLM по API',
@@ -29,6 +34,38 @@ const {
   </head>
   <body>
     <slot />
+
+    <RequestModal client:load />
+
+    {showBlockDock && <BlockDock client:idle />}
+
+    <!-- Все CTA «#request» открывают модалку с формой (одна на всю страницу).
+         Без JS ссылка по-прежнему скроллит к инлайн-форме в секции #request. -->
+    <script>
+      import { openRequestModal } from '../stores/request';
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const link = target.closest?.('a[href="#request"]');
+        if (!link) return;
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        openRequestModal();
+      });
+    </script>
+
+    <!-- Block-variant runtime: показывает выбранную версию каждого блока,
+         прячет остальные. display:contents/none сохраняет layout активной
+         секции (см. BlockVariant.astro). Работает и в проде (рендерит дефолт). -->
+    <script>
+      import { $variants } from '../stores/variants';
+      const apply = (state: Record<string, string>) => {
+        document.querySelectorAll<HTMLElement>('[data-block][data-variant]').forEach((el) => {
+          const active = state[el.getAttribute('data-block')!];
+          el.style.display = el.getAttribute('data-variant') === active ? 'contents' : 'none';
+        });
+      };
+      $variants.subscribe(apply);
+    </script>
 
     <!-- Sync shared store → <html> dataset (drives concept theme + scene visibility). -->
     <script>

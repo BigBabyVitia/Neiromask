@@ -9,24 +9,24 @@ const market = [
     desc: 'Быстрый старт и доступ к сильным моделям — но исходные ФИО, паспорта и реквизиты уходят во внешнюю модель без единого аудита и правил.',
   },
   {
-    title: 'Полностью закрытый контур',
-    desc: 'Данные не покидают компанию и контроль максимальный — но инфраструктура дорогая, а путь до production долгий.',
+    title: 'Свой сервер, полностью закрытый',
+    desc: 'Данные не покидают компанию и контроль максимальный — но инфраструктура дорогая, а путь до запуска долгий.',
   },
 ];
 
 // Блок 2 — что предлагаем мы.
 const offer = [
   {
-    title: 'Маскируем ПДн до выхода в API',
-    desc: 'ФИО, телефоны, паспорта и реквизиты заменяются плейсхолдерами до отправки во внешнюю модель.',
+    title: 'Прячем данные до отправки наружу',
+    desc: 'ФИО, телефоны, паспорта и реквизиты заменяются метками-заглушками до отправки во внешнюю модель.',
   },
   {
-    title: 'Восстанавливаем ответ внутри контура',
-    desc: 'Реальные значения подставляются обратно в контуре Нейроключа — пользователь видит готовый результат, а не плейсхолдеры.',
+    title: 'Возвращаем ответ в вашу закрытую зону',
+    desc: 'Настоящие значения подставляются обратно в вашей закрытой зоне — пользователь видит готовый результат, а не заглушки.',
   },
   {
     title: 'Единый аудит и правила обработки',
-    desc: 'Кто отправил, какие сущности найдены и какое действие применено — всё фиксируется и доступно для аудита.',
+    desc: 'Кто отправил, какие персональные данные найдены и какое действие применено — всё фиксируется и доступно для аудита.',
   },
 ];
 ---
@@ -64,7 +64,7 @@ const offer = [
         </div>
         <span class="tp-or">или</span>
         <div class="nm-node">
-          <div class="nm-node-title">Полный on-prem</div>
+          <div class="nm-node-title">Свой сервер</div>
           <div class="nm-node-desc">дорого и долго</div>
         </div>
       </div>
@@ -131,8 +131,8 @@ const offer = [
   <div class="aj-note">
     <span class="aj-key s">S</span>
     <span>
-      <strong>Снятие барьера выбора:</strong> третий путь между небезопасным облаком и
-      тяжёлым on-prem — сила внешних моделей без передачи исходных ПДн.
+      <strong>Снятие барьера выбора:</strong> сила внешних моделей без передачи исходных ПДн —
+      не выбирая между небезопасным облаком и дорогим своим сервером.
     </span>
   </div>
 </section>
@@ -150,6 +150,25 @@ const offer = [
   @media (max-width: 860px) {
     .needs-split.rev .needs-col {
       order: 0;
+    }
+    /* both blocks on mobile: heading → visual → items. needs-col holds both head
+       and list, so dissolve it (display:contents) to promote them into the grid,
+       then slot the visual between. */
+    #tp-market .needs-col,
+    #tp-offer .needs-col {
+      display: contents;
+    }
+    #tp-market .needs-head,
+    #tp-offer .needs-head {
+      order: 1;
+    }
+    #tp-market .needs-visual,
+    #tp-offer .needs-visual {
+      order: 2;
+    }
+    #tp-market .needs-list,
+    #tp-offer .needs-list {
+      order: 3;
     }
   }
 
@@ -207,10 +226,10 @@ const offer = [
     width: min(300px, 86%);
     border: 1px solid var(--color-line);
     background: var(--color-surface);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 13px 12px;
     text-align: center;
-    box-shadow: 0 6px 16px rgba(22, 38, 78, 0.08);
+    box-shadow: var(--shadow-card);
   }
   .nm-infrastructure .nm-node {
     width: 100%;
@@ -228,7 +247,7 @@ const offer = [
   .nm-node-center {
     border: none;
     color: #fff;
-    background: linear-gradient(135deg, #2a52d6 0%, #163fb8 100%);
+    background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-strong) 100%);
     box-shadow: 0 14px 30px rgba(22, 63, 184, 0.28);
     overflow: hidden;
   }
@@ -300,10 +319,35 @@ const offer = [
   // Инициализируем для обоих блоков.
   const initAccordion = (root: HTMLElement) => {
     const items = Array.from(root.querySelectorAll<HTMLElement>('.needs-item'));
+    if (!items.length) return;
+    const list = root.querySelector<HTMLElement>('.needs-list');
     const bars = items.map((item) => item.querySelector<HTMLElement>('.needs-progress'));
+    const panels = items.map((item) => item.querySelector<HTMLElement>('.needs-item__panel'));
+
+    const activeIndex = () => items.findIndex((it) => it.classList.contains('is-active'));
 
     const activate = (idx: number) => {
       items.forEach((item, i) => item.classList.toggle('is-active', i === idx));
+    };
+
+    // Резервируем под списком высоту самого высокого состояния. Иначе при
+    // переключении пунктов меняется высота списка: на десктопе (список прибит
+    // к низу колонки) вверх-вниз прыгает весь стек заголовков, а на мобиле
+    // (список в потоке) дёргается высота секции и весь сайт под ней.
+    const reserve = () => {
+      if (!list) return;
+      const keep = Math.max(0, activeIndex());
+      panels.forEach((p) => p && (p.style.transition = 'none'));
+      list.style.minHeight = '0px';
+      let max = 0;
+      items.forEach((_, i) => {
+        activate(i);
+        max = Math.max(max, list.scrollHeight);
+      });
+      activate(keep);
+      list.style.minHeight = `${Math.ceil(max)}px`;
+      // вернуть переходы в следующем кадре, чтобы восстановление не анимировалось
+      requestAnimationFrame(() => panels.forEach((p) => p && (p.style.transition = '')));
     };
 
     bars.forEach((bar, i) => {
@@ -326,6 +370,27 @@ const offer = [
         }
       });
     });
+
+    reserve();
+    // reserve() на init считает высоты по фолбэк-шрифту (Google Fonts грузятся
+    // с font-display: swap). Реальные метрики Inter/Lora приходят позже и меняют
+    // высоту описаний; смены ширины при этом нет, поэтому ResizeObserver ниже
+    // (он завязан на ширину) не срабатывает и зарезервированная min-height
+    // устаревает — самый высокий пункт перестаёт помещаться, и при переключении
+    // на более короткий первый пункт высота списка скачет (на мобиле дёргается
+    // вся страница под ним). Пересчитываем, когда шрифты догрузились.
+    document.fonts?.ready?.then(reserve);
+    // Перенос строк (а значит и максимальная высота) зависит от ширины —
+    // пересчитываем синхронно при смене ширины. Высоту (наши же правки) и
+    // повторные срабатывания при той же ширине игнорируем, чтобы не зациклить.
+    let lastW = Math.round(root.getBoundingClientRect().width);
+    const ro = new ResizeObserver((entries) => {
+      const w = Math.round(entries[0].contentRect.width);
+      if (w === lastW) return;
+      lastW = w;
+      reserve();
+    });
+    ro.observe(root);
   };
 
   ['tp-market', 'tp-offer'].forEach((id) => {

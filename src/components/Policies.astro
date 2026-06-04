@@ -44,7 +44,7 @@ const policies = [
   {
     cls: 'mask',
     title: 'Маскирование',
-    text: 'Чувствительные данные заменяются на плейсхолдеры до отправки во внешнюю модель.',
+    text: 'Чувствительные данные заменяются на метки-заглушки до отправки во внешнюю модель.',
     mock: 'Иванов И.И. → [Person_1]',
   },
   {
@@ -87,8 +87,20 @@ const policies = [
     }
   </div>
 
+  <div class="policy-cta">
+    <a class="btn btn--round" href="#request" data-copy="hero.cta">{t('hero.cta')}</a>
+  </div>
+
   <div class="aj-note">
     <span class="aj-key p">P</span>
     <span><strong>Proof для ИБ:</strong> вместо ручного запрета появляется проверяемый набор правил mask / block / allow.</span>
   </div>
 </section>
+
+<style>
+  .policy-cta {
+    margin-top: 36px;
+    display: flex;
+    justify-content: center;
+  }
+</style>

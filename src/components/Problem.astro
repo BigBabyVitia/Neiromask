@@ -9,7 +9,9 @@ const risks = [0, 1, 2];
     <div class="intro-head">
       <span class="aj-chip">B</span>
       <h2 data-copy="problem.h2">{t('problem.h2')}</h2>
-      <p class="lead mt-5 max-w-[760px] mx-auto" data-copy="problem.lead">{t('problem.lead')}</p>
+      <p class="lead mt-5 max-w-[760px] mx-auto" data-copy="problem.lead">
+        <span data-copy="problem.lead.0">{t('problem.lead.0')}</span><strong data-copy="problem.lead.risk">{t('problem.lead.risk')}</strong><span data-copy="problem.lead.1">{t('problem.lead.1')}</span><strong data-copy="problem.lead.approval">{t('problem.lead.approval')}</strong><span data-copy="problem.lead.2">{t('problem.lead.2')}</span>
+      </p>
       <div class="aj-note">
         <span class="aj-key">B</span>
         <span><strong>Большая работа:</strong> дать сотрудникам AI-инструмент и не превратить каждый документ в риск утечки.</span>
@@ -26,5 +28,6 @@ const risks = [0, 1, 2];
         ))
       }
     </div>
+
   </div>
 </section>

@@ -304,35 +304,70 @@ const curves = ['bowl', 'straight', 'arch'];
     color: #8c8579;
   }
 
-  /* ---- скелетон-клон (.kv-skel) — серая версия карточки ---- */
+  /* ---- скелетон-клон (.kv-skel): структура карточки сохранена, скрыто только
+     ЗНАЧЕНИЕ. Иконка и тип-лейбл — не ПДн, остаются как в оригинале ---- */
   .hero_marquee_item.kv-skel {
     background-color: #ffffffcc;
     box-shadow: none;
     border-color: #00000008;
   }
-  .kv-skel .hero_marquee_img-wrap {
-    background-color: #f1ede7;
-  }
-  .kv-skel .kv-ico {
-    opacity: 0;
-  }
-  /* бары чуть раздвинуты по вертикали — outline съедал row-gap текст-врапа */
-  .kv-skel .hero_marquee_text-wrap {
-    row-gap: 0.5rem;
-  }
+
+  /* иконо-бокс и тип-лейбл НЕ трогаем — иконка видна, лейбл читается */
+
+  /* скрыто только значение: сетка кубиков (маска с зазорами). Каждый кубик
+     сам по себе чуть-чуть «дышит» цветом — две диагонали поверх базовой
+     шахматки, opacity вразнобой. Без бегущего блика. */
   .kv-skel .kv-value {
     color: #0000;
-    background-color: #f0eae1;
+    position: relative;
     border-radius: 0.2rem;
-    outline: 0.14rem solid #f0eae1;
     overflow: hidden;
+    /* шахматка кубиков (квадраты, два близких тёплых тона): TL,BR светлый;
+       TR,BL тёмный. Размер тайла = высота бара → ВСЕГДА ровно 2 ряда,
+       кубик квадратный, тайлится по горизонтали без обрезков-зазоров */
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'><rect width='2' height='2' fill='%23efece6'/><rect x='1' width='1' height='1' fill='%23e4ded5'/><rect y='1' width='1' height='1' fill='%23e4ded5'/></svg>")
+      0 0 / auto 100% repeat-x;
+    image-rendering: pixelated;
   }
-  .kv-skel .kv-type {
-    color: #0000;
-    background-color: #f5f1ea;
-    border-radius: 0.2rem;
-    outline: 0.12rem solid #f5f1ea;
-    overflow: hidden;
+  .kv-skel .kv-value::before,
+  .kv-skel .kv-value::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  /* диагональ TL+BR — уходит чуть темнее, медленное дыхание */
+  .kv-skel .kv-value::before {
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'><rect width='1' height='1' fill='%23d9d3c9'/><rect x='1' y='1' width='1' height='1' fill='%23d9d3c9'/></svg>")
+      0 0 / auto 100% repeat-x;
+    opacity: 0;
+    animation: kv-cube-a 4.6s ease-in-out infinite;
+  }
+  /* диагональ TR+BL — уходит чуть светлее, своя фаза */
+  .kv-skel .kv-value::after {
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'><rect x='1' width='1' height='1' fill='%23f7f3ed'/><rect y='1' width='1' height='1' fill='%23f7f3ed'/></svg>")
+      0 0 / auto 100% repeat-x;
+    opacity: 0;
+    animation: kv-cube-b 6.2s ease-in-out infinite;
+    animation-delay: -1.7s;
+  }
+
+  @keyframes kv-cube-a {
+    0%,
+    100% {
+      opacity: 0.05;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  @keyframes kv-cube-b {
+    0%,
+    100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.04;
+    }
   }
 
   /* центральная светящаяся нода — фон даёт .aurora-grad (global) */
@@ -376,6 +411,11 @@ const curves = ['bowl', 'straight', 'arch'];
   @media (prefers-reduced-motion: reduce) {
     .hero_marquee_track {
       animation: none;
+    }
+    .kv-skel .kv-value::before,
+    .kv-skel .kv-value::after {
+      animation: none;
+      opacity: 0.4;
     }
   }
 </style>

@@ -1,86 +1,13 @@
 ---
 import { t } from '../copy';
-import SilkBg from './SilkBg.astro';
-
-const items = [0, 1, 2];
 ---
 
 <section class="band" id="needs">
-  <div class="section">
-    <div class="needs-split">
-      <div class="needs-col">
-        <div class="needs-head">
-          <h2 class="needs-title" data-copy="needs.h2">{t('needs.h2')}</h2>
-        </div>
-
-        <ul class="needs-list">
-          {
-            items.map((i) => (
-              <li class={`needs-item${i === 0 ? ' is-active' : ''}`} data-needs={i}>
-                <span class="needs-progress" aria-hidden="true" />
-                <strong class="needs-item__title" data-copy={`needs.items.${i}.title`}>
-                  {t(`needs.items.${i}.title`)}
-                </strong>
-                <div class="needs-item__panel">
-                  <p class="needs-item__desc" data-copy={`needs.items.${i}.desc`}>
-                    {t(`needs.items.${i}.desc`)}
-                  </p>
-                </div>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <div class="needs-visual silk-grad">
-        <SilkBg />
-        {/* Декоративный визуализатор: значение PII (жёлтый) → токен (синий). */}
-        <div class="needs-mask" aria-hidden="true">
-          <span class="nm-raw">Иванов&nbsp;И.&nbsp;И.</span>
-          <svg class="nm-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 12h15m0 0-5-5m5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <span class="nm-tok">[ИМЯ]</span>
-        </div>
-      </div>
+  <div class="section intro">
+    <div class="intro-head">
+      <span class="aj-chip">B</span>
+      <h2 data-copy="needs.h2">{t('needs.h2')}</h2>
+      <p class="lead mt-5 max-w-[760px]" data-copy="needs.lead">{t('needs.lead')}</p>
     </div>
   </div>
 </section>
-
-<script>
-  // «Что вы получаете»: открыт всегда только один пункт. Пункты переключаются
-  // по таймеру друг за другом — отсчёт ведёт линия .needs-progress в верхнем
-  // девайдере активного пункта (CSS-анимация). Её animationend открывает
-  // следующий пункт. Клик по пункту перебивает таймер и перезапускает отсчёт.
-  const root = document.querySelector<HTMLElement>('#needs');
-  if (root) {
-    const items = Array.from(root.querySelectorAll<HTMLElement>('.needs-item'));
-    const bars = items.map((item) => item.querySelector<HTMLElement>('.needs-progress'));
-
-    const activate = (idx: number) => {
-      items.forEach((item, i) => item.classList.toggle('is-active', i === idx));
-    };
-
-    bars.forEach((bar, i) => {
-      bar?.addEventListener('animationend', () => {
-        if (items[i].classList.contains('is-active')) activate((i + 1) % items.length);
-      });
-    });
-
-    items.forEach((item, i) => {
-      item.addEventListener('click', () => {
-        if (item.classList.contains('is-active')) {
-          // перезапуск анимации отсчёта на уже открытом пункте
-          const bar = bars[i];
-          if (bar) {
-            bar.style.animation = 'none';
-            void bar.offsetWidth;
-            bar.style.animation = '';
-          }
-        } else {
-          activate(i);
-        }
-      });
-    });
-  }
-</script>

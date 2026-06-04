@@ -1,0 +1,23 @@
+---
+/* Обёртка одной версии блока. Все версии блока рендерятся сервером;
+   видна только дефолтная (первая в реестре) — остальные display:none.
+   На клиенте Layout-рантайм переключает display по выбору в BlockDock.
+
+   display:contents у обёртки делает её layout-прозрачной: вложенная
+   <section> ведёт себя как прямой ребёнок <main> (сохраняются band-
+   градиенты, отступы и порядок секций). При скрытии рантайм ставит
+   display:none. */
+import { defaultVariant } from '../stores/variants';
+
+interface Props {
+  block: string;
+  variant: string;
+}
+
+const { block, variant } = Astro.props;
+const show = variant === defaultVariant(block);
+---
+
+<div data-block={block} data-variant={variant} style={`display:${show ? 'contents' : 'none'}`}>
+  <slot />
+</div>

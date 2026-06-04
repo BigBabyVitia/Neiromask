@@ -2,12 +2,18 @@
 import FlowScene from './FlowScene.astro';
 import { t } from '../copy';
 
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
 const steps = [
   { n: 1, tag: 'Вход' },
-  { n: 2, tag: 'Детектор PII' },
-  { n: 3, tag: 'Политики' },
-  { n: 4, tag: 'Обезличивание' },
-  { n: 5, tag: 'Нейроключ · Журнал' },
+  { n: 2, tag: 'Поиск данных' },
+  { n: 3, tag: 'Правила' },
+  { n: 4, tag: 'Замена данных' },
+  { n: 5, tag: 'Ваша зона · Журнал' },
 ];
 ---
 
@@ -19,7 +25,7 @@ const steps = [
       <p data-copy="how.lead">{t('how.lead')}</p>
     </div>
 
-    <div class="flow-stack">
+    <div class:list={['flow-stack', compact && 'flow-stack--compact']}>
       {/* central rail + the square that darts with scroll velocity */}
       <div class="flow-rail" aria-hidden="true">
         <span class="flow-meter"></span>
@@ -33,15 +39,11 @@ const steps = [
               <h3 class="flow-card__title" data-copy={`how.steps.${i}.title`}>{t(`how.steps.${i}.title`)}</h3>
             </header>
 
+            <p class="flow-card__text" data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
+
             <div class="flow-card__stage" data-step={s.n}>
               <FlowScene step={s.n} />
             </div>
-
-            <footer class="flow-card__foot">
-              <span class="flow-card__icon" aria-hidden="true" />
-              <span class="flow-card__tag">{s.tag}</span>
-              <p class="flow-card__text" data-copy={`how.steps.${i}.text`}>{t(`how.steps.${i}.text`)}</p>
-            </footer>
           </article>
         ))
       }

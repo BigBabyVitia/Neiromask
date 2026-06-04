@@ -1,0 +1,39 @@
+---
+import { t } from '../copy';
+
+const points = [0, 1, 2];
+---
+
+<div class="nk-shelf" aria-labelledby="nk-shelf-title">
+  <ul class="nk-shelf__points">
+    {
+      points.map((i) => (
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+          <span data-copy={`nk.points.${i}`}>{t(`nk.points.${i}`)}</span>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="nk-shelf__text">
+    <h3 id="nk-shelf-title" data-copy="nk.h3">{t('nk.h3')}</h3>
+    <p data-copy="nk.lead">{t('nk.lead')}</p>
+  </div>
+
+  <div class="nk-shelf__actions">
+    <a class="btn btn--round" href="#request" data-copy="nk.primaryCta">{t('nk.primaryCta')}</a>
+    <a class="btn btn--secondary btn--round" href="https://neiroklyuch.ru/" target="_blank" rel="noopener noreferrer" data-copy="nk.secondaryCta">
+      {t('nk.secondaryCta')}
+    </a>
+  </div>
+
+  <figure class="nk-shelf__shot">
+    <img
+      src="/img/neiroklyuch-main-page.png"
+      alt="Интерфейс Нейроключа с чатами, моделями и рабочей областью"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
+</div>

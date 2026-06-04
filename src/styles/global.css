@@ -20,8 +20,16 @@
   --color-violet: #2a4bd4;
   --color-dark: #1c1813;
   --color-warn: #ff5d73;
+  /* «безопасно / разрешено / восстановлено реальное значение» — единый зелёный.
+     Несёт смысл, поэтому вынесен в токен (был захардкожен в atom-* и Policies). */
+  --color-safe: #1f9d5f;
+  --color-safe-strong: #16855a;
 
   --shadow-card: 0 18px 50px rgba(46, 38, 26, 0.1);
+
+  /* радиусы визуальной системы silk: рамка-панель vs внутренняя карточка */
+  --radius-silk: 20px;
+  --radius-card: 12px;
 
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-serif: "Lora", Georgia, "Times New Roman", serif;
@@ -108,7 +116,7 @@
   .section {
     max-width: 1180px;
     margin-inline: auto;
-    padding: 72px 24px;
+    padding: 96px 24px;
   }
 
   .btn {
@@ -253,18 +261,29 @@
     background: color-mix(in srgb, var(--color-shade) 70%, transparent);
   }
   
-  /* mobile burger — solid primary (ink) icon button, matches .nav-cta/.btn.
-     No drop shadow (the old frosted pill's 0 14px 40px read as a stray blob). */
+  /* mobile burger — secondary icon button (surface + line border), paired with
+     the solid primary "Обсудить" CTA next to it. No drop shadow. */
   .nav-burger {
-    border: 1px solid var(--color-ink);
+    border: 1px solid var(--color-line);
     border-radius: 12px;
-    background: var(--color-ink);
-    color: #fff;
+    background: var(--color-surface);
+    color: var(--color-ink);
     cursor: pointer;
-    transition: opacity 0.18s ease;
+    transition: background 0.18s ease, border-color 0.18s ease;
     -webkit-tap-highlight-color: transparent;
   }
   .nav-burger:hover {
+    background: color-mix(in srgb, var(--color-line) 40%, var(--color-surface));
+  }
+  /* primary icon button: same box as the burger, solid black fill (matches the
+     desktop "Разобрать сценарий" CTA). */
+  .nav-burger--primary {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: #fff;
+  }
+  .nav-burger--primary:hover {
+    background: var(--color-ink);
     opacity: 0.9;
   }
 
@@ -292,6 +311,12 @@
     padding: 4px 24px;
     border-bottom: 1px solid var(--color-line);
   }
+  /* mirror the closed header's left cluster: menu toggle + wordmark, same gap */
+  .mobile-menu__lead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .mobile-menu__links {
     display: flex;
     flex-direction: column;
@@ -315,11 +340,6 @@
   .mobile-menu__link:active {
     color: var(--color-brand-strong);
   }
-  .mobile-menu__cta {
-    margin: 20px 24px calc(24px + env(safe-area-inset-bottom));
-    height: 52px;
-    font-size: 15px;
-  }
 
   /* CTA: solid black */
   .nav-cta {
@@ -340,6 +360,12 @@
   }
   .nav-cta:hover {
     opacity: 0.9;
+  }
+  /* mobile top-bar CTA — taller to match the 44px burger tap target */
+  .nav-cta--mobile {
+    height: 44px;
+    padding: 0 18px;
+    font-size: 14px;
   }
 
   .chip {
@@ -580,6 +606,156 @@
       display: none;
     }
   }
+
+  /* ---- Block dock (dev/презентация: переключение версий блоков) ---- */
+  .blockdock-tab {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid color-mix(in srgb, var(--color-line) 78%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(18px);
+    padding: 9px 16px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .blockdock-tab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-brand);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-brand) 22%, transparent);
+  }
+
+  .blockdock {
+    position: fixed;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 40;
+    width: min(580px, calc(100vw - 24px));
+    max-height: min(62vh, 540px);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.26);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+  }
+  .blockdock-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
+  }
+  .blockdock-head strong {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .blockdock-sub {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .blockdock-head-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+  .blockdock-reset,
+  .blockdock-close {
+    border: 1px solid color-mix(in srgb, var(--color-line) 70%, transparent);
+    background: transparent;
+    color: var(--color-muted);
+    border-radius: 8px;
+    min-height: 30px;
+    padding: 0 10px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .blockdock-close {
+    padding: 0 9px;
+  }
+  .blockdock-reset:hover,
+  .blockdock-close:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  .blockdock-list {
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px;
+    overflow-y: auto;
+  }
+  .blockdock-empty {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 13px;
+  }
+  .blockdock-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .blockdock-row-label {
+    flex: 0 0 130px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .blockdock-seg {
+    display: flex;
+    gap: 4px;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    padding: 4px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color-bg) 70%, var(--color-shade));
+  }
+  .blockdock-seg-btn {
+    border: 0;
+    background: transparent;
+    color: var(--color-muted);
+    border-radius: 7px;
+    min-height: 30px;
+    padding: 0 12px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .blockdock-seg-btn[data-active="true"] {
+    background: var(--color-brand);
+    color: #fff;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--color-brand) 40%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .blockdock-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
+    }
+    .blockdock-row-label {
+      flex-basis: auto;
+    }
+  }
 }
 
 /* ===== reusable «liquid» gradient — кремово-синий, многослойный =====
@@ -719,8 +895,11 @@
     radial-gradient(46% 64% at 84% 80%, #1b3aa2 0%, rgba(27, 58, 162, 0) 60%),
     radial-gradient(40% 56% at 78% 18%, #6f96ff 0%, rgba(111, 150, 255, 0) 60%);
 }
-/* иллюстрация Policies заполняет stage (чтобы svg height:% работал) */
+/* иллюстрация Policies заполняет stage (чтобы svg height:% работал).
+   position+z-index:1 → SVG-арт лежит над тёплой вуалью (.silk-grad::before, z0) */
 .silk-grad > .policy-art {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   display: flex;
@@ -736,6 +915,12 @@
   width: 36px;
   height: 36px;
 }
+/* phone: hide the shield, keep just the wordmark in the header */
+@media (max-width: 767px) {
+  .logo-mark {
+    display: none;
+  }
+}
 .logo-shield {
   display: block;
   width: 36px;
@@ -748,7 +933,63 @@
 }
 @media (max-width: 640px) {
   .hero-h1 {
-    font-size: 33px;
+    font-size: 28px;
+  }
+}
+@media (max-width: 400px) {
+  .hero-h1 {
+    font-size: 25px;
+  }
+}
+
+/* Hero первый экран на телефоне: убираем огромный верхний отступ, ставим
+   заголовок→лид→CTA первыми, а полосу доверия — карточкой-пруфом под CTA.
+   На десктопе порядок прежний (бейджи над h1). */
+@media (max-width: 560px) {
+  #top {
+    display: flex;
+    flex-direction: column;
+    padding-top: 28px;
+    padding-bottom: 8px;
+  }
+  #top .hero-main {
+    order: 1;
+    width: 100%;
+  }
+  #top .hero-h1 {
+    text-wrap: balance;
+  }
+  #top .hero-main > p {
+    margin-top: 16px;
+    text-wrap: pretty;
+    /* шаг шкалы вниз: LEAD 16 → P2 14 на телефоне */
+    font-size: 14px;
+  }
+  #top .hero-main > .btn,
+  #top .hero-main > div:has(> .btn) {
+    margin-top: 24px;
+  }
+  #top .trust-strip {
+    order: 2;
+    width: 100%;
+    margin-top: 28px;
+    margin-bottom: 0;
+  }
+}
+
+/* НейроМаск по центру шапки на телефоне — и в свёрнутой шапке, и в открытом
+   меню. Логотип позиционируем абсолютно по центру бара; кнопки (бургер,
+   «Обсудить» / закрыть) остаются прижатыми к краям. */
+@media (max-width: 767px) {
+  .mobile-menu__bar {
+    position: relative;
+  }
+  .nav-bar .nav-logo,
+  .mobile-menu__bar .nav-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -933,7 +1174,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
-  gap: 36px;
+  gap: 18px;
 }
 .risk-box {
   position: relative;
@@ -959,6 +1200,18 @@ h3 {
   color: var(--color-muted);
   font-size: 14px;
   line-height: 1.55;
+}
+.problem-aside {
+  max-width: 760px;
+  margin: -20px auto 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+}
+.problem-aside strong {
+  color: var(--color-ink);
+  font-weight: 650;
 }
 .risk-number {
   width: 30px;
@@ -1000,6 +1253,10 @@ h3 {
   }
   .risk-row {
     grid-template-columns: 1fr;
+  }
+  .problem-aside {
+    margin-top: -8px;
+    text-align: left;
   }
 }
 
@@ -1122,16 +1379,19 @@ h3 {
   position: relative;
   aspect-ratio: 1 / 1;
   min-height: 460px;
-  border-radius: 28px;
+  border-radius: var(--radius-silk);
   /* min-height + aspect-ratio derives a width (460px here) that ignores the grid
      track and overflows when the column is narrower than that — on phones AND on
      desktop widths ~861–966px where each 1fr column drops below 460px. Clamp the
      width to the column so the silk card never bleeds past the viewport. */
   max-width: 100%;
 }
-/* тёплый кремовый веер поверх шейдера: жёлтый доминирует, синий — акценты
-   (референс тёплый, а голый шейдер местами ловит синие кадры) */
-.needs-visual::before {
+/* тёплая кремовая вуаль поверх silk-шейдера на ВСЕХ светлых silk-карточках
+   (ThirdPath / Features / Policies): голый шейдер местами ловит синие кадры —
+   биас к тёплому, чтобы вся система читалась одинаково. deep-вариант
+   (Pricing / KeyVisual) исключён — он намеренно тёмно-синий.
+   z-index:0 → над canvas (z-1) и зерном, под контентом (positioned). */
+.silk-grad:not(.silk-grad--deep)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1141,49 +1401,6 @@ h3 {
     radial-gradient(86% 72% at 24% 14%, rgba(255, 247, 224, 0.85), rgba(255, 247, 224, 0) 58%),
     radial-gradient(80% 72% at 90% 86%, rgba(255, 235, 195, 0.62), rgba(255, 235, 195, 0) 56%),
     linear-gradient(165deg, rgba(255, 244, 216, 0.48), rgba(255, 238, 205, 0.3));
-}
-/* декоративный визуализатор: значение PII (жёлтый) → токен (синий) */
-.needs-mask {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: clamp(22px, 6%, 48px);
-}
-.nm-raw,
-.nm-tok {
-  border-radius: 10px;
-  padding: 7px 13px;
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.nm-raw {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  color: var(--color-ink);
-}
-.nm-tok {
-  background: #ece6da;
-  color: var(--color-ink);
-}
-.nm-arrow {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  color: var(--color-muted);
-}
-/* лёгкое дыхание стрелки — без перестроения макета */
-@media (prefers-reduced-motion: no-preference) {
-  .nm-arrow { animation: nmArrow 3.4s ease-in-out infinite; }
-}
-@keyframes nmArrow {
-  0%, 100% { opacity: 0.5; transform: translateX(0); }
-  50% { opacity: 1; transform: translateX(3px); }
 }
 @media (max-width: 860px) {
   .needs-split {
@@ -1325,6 +1542,9 @@ h3 {
 .flow-card + .flow-card {
   margin-top: 300px; /* spaced zigzag: ~2× the per-card scroll pitch */
 }
+.flow-stack--compact .flow-card + .flow-card {
+  margin-top: 200px; /* compact variant: keeps the process moving with less scroll */
+}
 
 /* header: bordered number box + title */
 .flow-card__head {
@@ -1404,6 +1624,9 @@ h3 {
     linear-gradient(color-mix(in srgb, var(--color-bg) 70%, var(--color-surface)),
       color-mix(in srgb, var(--color-bg) 70%, var(--color-surface)));
   overflow: hidden;
+}
+.flow-stack--compact .flow-card__stage {
+  aspect-ratio: 16 / 10;
 }
 /* corner ticks (the Sui crosshair frame), drawn with two conic gradients */
 .flow-card__stage::before,
@@ -1925,8 +2148,7 @@ pre {
 .cap-media-frame {
   position: relative;
   height: 100%;
-  border-radius: 16px;
-  border: 1px solid var(--color-line);
+  border-radius: var(--radius-silk);
   overflow: hidden;
   /* фон даёт silk-шейдер (<SilkBg/> + .silk-grad); CSS-меш-фолбэк — в .silk-grad */
 }
@@ -1972,7 +2194,7 @@ pre {
 }
 .atom-card {
   border: 1px solid var(--color-line);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg));
   box-shadow: var(--shadow-card);
   padding: 13px 14px;
@@ -1995,12 +2217,18 @@ pre {
   color: var(--color-muted);
 }
 .atom-cap {
+  align-self: center;
+  width: fit-content;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  padding: 3px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 /* chips */
@@ -2025,9 +2253,9 @@ pre {
   border: 1px solid color-mix(in srgb, var(--color-brand) 34%, transparent);
 }
 .atom-chip--val {
-  color: #16855a;
-  background: color-mix(in srgb, #1f9d5f 13%, transparent);
-  border: 1px solid color-mix(in srgb, #1f9d5f 36%, transparent);
+  color: var(--color-safe-strong);
+  background: color-mix(in srgb, var(--color-safe) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-safe) 36%, transparent);
 }
 
 /* policies */
@@ -2059,7 +2287,7 @@ pre {
   flex: none;
 }
 .atom-dot--allow {
-  background: #1f9d5f;
+  background: var(--color-safe);
 }
 .atom-dot--mask {
   background: var(--color-brand);
@@ -2152,7 +2380,7 @@ pre {
 }
 .atom-code-res {
   margin-top: 3px;
-  color: #16855a;
+  color: var(--color-safe-strong);
   font-weight: 600;
 }
 
@@ -2197,7 +2425,7 @@ pre {
   --dot: rgba(40, 34, 24, 0.1);
   border: 1px solid var(--bd);
   background: var(--color-surface);
-  border-radius: 18px;
+  border-radius: var(--radius-silk);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2209,7 +2437,7 @@ pre {
   --acc: #ff5d73;
 }
 .policy-card.allow {
-  --acc: #2a4bd4;
+  --acc: var(--color-safe);
 }
 .policy-stage {
   position: relative;
@@ -2432,7 +2660,7 @@ pre {
   flex-direction: column;
   border: 1px solid var(--color-line);
   background: var(--color-surface);
-  border-radius: 20px;
+  border-radius: var(--radius-silk);
   padding: 32px 30px;
 }
 /* рекомендованный (облако) — крупная панель на silk-шейдере (бренд-эффект),
@@ -2588,6 +2816,90 @@ pre {
   min-height: 50px;
   font-size: 15px;
   border-radius: 12px;
+}
+
+/* ---- Neiroklyuch pilot: wide product screenshot block under pricing ---- */
+.nk-shelf {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  width: 100%;
+  margin: 86px 0 0;
+  padding-top: 72px;
+  border-top: 1px solid var(--color-line);
+  text-align: center;
+}
+.nk-shelf__text {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+.nk-shelf__text h3 {
+  max-width: 900px;
+  font-family: var(--font-serif);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: 0;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+.nk-shelf__text p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+.nk-shelf__points {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 24px;
+  margin: 0;
+  padding: 0;
+}
+.nk-shelf__points li {
+  display: inline-grid;
+  grid-template-columns: 20px minmax(0, max-content);
+  gap: 8px;
+  align-items: center;
+  color: var(--color-ink);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.nk-shelf__points svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--color-brand-strong);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nk-shelf__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.nk-shelf__shot {
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 10px;
+  border-radius: var(--radius-silk);
+  background: var(--color-shade);
+  box-shadow: 0 10px 34px rgba(46, 38, 26, 0.08);
+}
+.nk-shelf__shot img {
+  width: 100%;
+  display: block;
+  border-radius: 14px;
+  background: #f8f9fb;
 }
 
 /* ---- Form-field primitives (shared by request form + console topbar) ---- */
@@ -2857,6 +3169,107 @@ pre {
   max-width: 42ch;
 }
 
+/* ---- Модалка заявки (открывается из любого CTA #request) ---- */
+.request-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: request-modal-fade 0.18s ease both;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.request-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+  padding: 40px 32px 32px;
+  animation: request-modal-rise 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.request-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.request-modal__close:hover {
+  background: color-mix(in srgb, var(--color-line) 40%, var(--color-surface));
+}
+.request-modal__close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.request-modal__head {
+  margin-bottom: 22px;
+}
+.request-modal__head h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.18;
+  margin: 0 0 10px;
+  max-width: 16ch;
+}
+.request-modal__head p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 15px;
+  line-height: 1.5;
+}
+@media (max-width: 560px) {
+  .request-modal {
+    padding: 0;
+  }
+  .request-modal__panel {
+    min-height: 100%;
+    border: none;
+    border-radius: 0;
+    padding: 56px 20px 28px;
+  }
+  .request-modal__head h2 {
+    max-width: none;
+    font-size: 24px;
+  }
+}
+@keyframes request-modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes request-modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .request-modal,
+  .request-modal__panel {
+    animation: none;
+  }
+}
+
 /* ---- Интерфейс НейроМаск (тёмный продуктовый мок) ---- */
 .console-mock {
   max-width: 720px;
@@ -2952,6 +3365,17 @@ pre {
   .pricing-grid {
     grid-template-columns: 1fr;
   }
+  .nk-shelf {
+    margin-top: 72px;
+    padding-top: 60px;
+    gap: 22px;
+  }
+  .nk-shelf__points {
+    gap: 12px 24px;
+  }
+  .nk-shelf__points li {
+    white-space: normal;
+  }
 }
 @media (max-width: 640px) {
   .plan {
@@ -2959,6 +3383,53 @@ pre {
   }
   .plan-tagline {
     min-height: 0;
+  }
+  .nk-shelf {
+    margin-top: 58px;
+    padding-top: 46px;
+    gap: 20px;
+  }
+  .nk-shelf__text h3 {
+    font-size: 30px;
+  }
+  .nk-shelf__text p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .nk-shelf__points {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+  }
+  .nk-shelf__points li {
+    grid-template-columns: 22px minmax(0, 1fr);
+    min-width: 0;
+    font-size: 15px;
+    text-align: left;
+  }
+  .nk-shelf__points svg {
+    width: 22px;
+    height: 22px;
+  }
+  .nk-shelf__actions {
+    display: grid;
+    width: 100%;
+    max-width: 280px;
+  }
+  .nk-shelf__actions .btn {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  .nk-shelf__shot {
+    margin-top: 8px;
+    padding: 6px;
+    border-radius: 16px;
+  }
+  .nk-shelf__shot img {
+    border-radius: 11px;
   }
   .entity-meter {
     grid-template-columns: 1fr;
@@ -3719,5 +4190,32 @@ pre {
   .kv-card,
   .aurora-grad {
     animation: none;
+  }
+}
+
+/* ============================================================
+   Mobile screen-edge inset: 16px on every full-width wrapper
+   (site-wide default is 24px). padding-inline only → vertical
+   padding of each section is preserved. Placed last so it wins
+   over earlier ≤640 rules that re-declare the `padding` shorthand
+   (e.g. .bento-wrap). Dividers track the same 2×16 inset.
+   ============================================================ */
+@media (max-width: 640px) {
+  .shell,
+  .section,
+  .kv-band,
+  .bento-wrap,
+  .mobile-menu__bar,
+  .mobile-menu__links {
+    padding-inline: 16px;
+  }
+  /* header stays full-bleed (padding:0 in full mode); only its inner bar gets
+     the 16px content inset, so the bottom border still spans edge-to-edge */
+  header.nav-header[data-mode="full"] .nav-bar {
+    padding-inline: 16px;
+  }
+  .band::before,
+  .band::after {
+    width: calc(100% - 32px);
   }
 }
