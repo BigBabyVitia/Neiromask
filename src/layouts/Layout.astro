@@ -8,8 +8,8 @@ interface Props {
   description?: string;
 }
 
-// Панель версий блоков — только в dev или при PUBLIC_BLOCKS=1 (не в проде).
-const showBlockDock = import.meta.env.DEV || import.meta.env.PUBLIC_BLOCKS;
+// Панель версий блоков нужна для демонстрации вариантов прямо на лендинге.
+const showBlockDock = true;
 
 const {
   title = 'НейроМаск — маскирование персональных данных для LLM по API',
