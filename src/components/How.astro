@@ -2,6 +2,12 @@
 import FlowScene from './FlowScene.astro';
 import { t } from '../copy';
 
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
 const steps = [
   { n: 1, tag: 'Вход' },
   { n: 2, tag: 'Поиск данных' },
@@ -19,7 +25,7 @@ const steps = [
       <p data-copy="how.lead">{t('how.lead')}</p>
     </div>
 
-    <div class="flow-stack">
+    <div class:list={['flow-stack', compact && 'flow-stack--compact']}>
       {/* central rail + the square that darts with scroll velocity */}
       <div class="flow-rail" aria-hidden="true">
         <span class="flow-meter"></span>
