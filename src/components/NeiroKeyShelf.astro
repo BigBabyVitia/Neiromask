@@ -21,13 +21,6 @@ const points = [0, 1, 2];
     <p data-copy="nk.lead">{t('nk.lead')}</p>
   </div>
 
-  <div class="nk-shelf__actions">
-    <a class="btn btn--round" href="#request" data-copy="nk.primaryCta">{t('nk.primaryCta')}</a>
-    <a class="btn btn--secondary btn--round" href="https://neiroklyuch.ru/" target="_blank" rel="noopener noreferrer" data-copy="nk.secondaryCta">
-      {t('nk.secondaryCta')}
-    </a>
-  </div>
-
   <figure class="nk-shelf__shot">
     <img
       src="/img/neiroklyuch-main-page.png"
@@ -36,4 +29,12 @@ const points = [0, 1, 2];
       decoding="async"
     />
   </figure>
+
+  <div class="nk-shelf__actions">
+    <a class="btn btn--round" href="#request" data-copy="nk.primaryCta">{t('nk.primaryCta')}</a>
+    <a class="btn btn--secondary btn--round" href="https://neiroklyuch.ru/" target="_blank" rel="noopener noreferrer" data-copy="nk.secondaryCta">
+      <span>{t('nk.secondaryCta')}</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+    </a>
+  </div>
 </div>

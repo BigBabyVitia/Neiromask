@@ -15,6 +15,7 @@ const icons: Record<string, string> = {
   mail: '<rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M3.5 7.5l8.5 6 8.5-6"/>',
   card: '<rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path d="M2.5 10h19"/>',
   doc: '<path d="M14 3H7.5A2 2 0 0 0 5.5 5v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h4.5"/>',
+  photo: '<rect x="3" y="4.5" width="18" height="15" rx="2.4"/><circle cx="8.5" cy="10" r="1.9"/><path d="M3.5 17l5-4 3.5 2.6L16 11.5l4.5 4.5"/>',
   pin: '<path d="M12 21.5s6.8-6.2 6.8-11.5a6.8 6.8 0 1 0-13.6 0c0 5.3 6.8 11.5 6.8 11.5z"/><circle cx="12" cy="9.5" r="2.4"/>',
   cal: '<rect x="3.5" y="5" width="17" height="16" rx="2.4"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
   hash: '<path d="M5 9.5h14M5 14.5h14M10.5 4l-2 16M15.5 4l-2 16"/>',
@@ -23,26 +24,33 @@ const icons: Record<string, string> = {
 type Card = { icon: string; type: string; raw: string; ph: string };
 
 // curve по индексу ряда: 0=bowl, 1=straight, 2=arch
+// ВНИМАНИЕ: все значения — синтетические демо-данные (вымышленные люди). Формат
+// реалистичный — в этом суть демо. Безопасность по полям: карта показана с
+// маскированной серединой (•••• — виден только BIN+последние 4); СНИЛС/ИНН/паспорт
+// взяты «как настоящие», но случайные → почти наверняка невалидны по контрольной
+// сумме/серии; e-mail на RFC-зарезервированном example.ru (гарантированно ничей).
 const rows: Card[][] = [
   [
     { icon: 'user', type: 'ФИО', raw: 'Анна Смирнова', ph: '[Person_1]' },
-    { icon: 'phone', type: 'Телефон', raw: '+7 999 123-45-67', ph: '[Phone_1]' },
+    { icon: 'phone', type: 'Телефон', raw: '+7 916 248-50-37', ph: '[Phone_1]' },
     { icon: 'id', type: 'Паспорт', raw: '4510 №123456', ph: '[Passport_1]' },
-    { icon: 'mail', type: 'Email', raw: 'a.smirnova@firma.ru', ph: '[Email_1]' },
+    { icon: 'photo', type: 'Скан', raw: 'паспорт.jpg', ph: '[Photo_1]' },
+    { icon: 'mail', type: 'Email', raw: 'a.smirnova@example.ru', ph: '[Email_1]' },
     { icon: 'card', type: 'Карта', raw: '4276 •••• 8821', ph: '[Card_1]' },
-    { icon: 'hash', type: 'СНИЛС', raw: '112-233-445 95', ph: '[SNILS_1]' },
+    { icon: 'hash', type: 'СНИЛС', raw: '116-973-385 42', ph: '[SNILS_1]' },
     { icon: 'pin', type: 'Адрес', raw: 'ул. Ленина, 14', ph: '[Address_1]' },
     { icon: 'cal', type: 'Дата рожд.', raw: '12.04.1990', ph: '[DOB_1]' },
     { icon: 'doc', type: 'Договор', raw: '№ NK-4821', ph: '[Contract_1]' },
   ],
   [
-    { icon: 'phone', type: 'Телефон', raw: '+7 921 555-10-20', ph: '[Phone_2]' },
+    { icon: 'phone', type: 'Телефон', raw: '+7 921 770-14-22', ph: '[Phone_2]' },
     { icon: 'user', type: 'ФИО', raw: 'Иван Петров', ph: '[Person_2]' },
-    { icon: 'hash', type: 'ИНН', raw: '7701 123456', ph: '[INN_1]' },
-    { icon: 'mail', type: 'Email', raw: 'i.petrov@mail.ru', ph: '[Email_2]' },
+    { icon: 'hash', type: 'ИНН', raw: '7714 365218', ph: '[INN_1]' },
+    { icon: 'mail', type: 'Email', raw: 'i.petrov@example.ru', ph: '[Email_2]' },
     { icon: 'id', type: 'Паспорт', raw: '4012 №998877', ph: '[Passport_2]' },
     { icon: 'card', type: 'Карта', raw: '5536 •••• 1043', ph: '[Card_2]' },
     { icon: 'doc', type: 'Договор', raw: '№ NK-5190', ph: '[Contract_2]' },
+    { icon: 'photo', type: 'Фото', raw: 'фото ущерба.jpg', ph: '[Photo_2]' },
     { icon: 'pin', type: 'Адрес', raw: 'пр. Мира, 7-12', ph: '[Address_2]' },
     { icon: 'user', type: 'ФИО', raw: 'Ольга Кузнецова', ph: '[Person_3]' },
   ],
@@ -50,12 +58,13 @@ const rows: Card[][] = [
     { icon: 'cal', type: 'Дата рожд.', raw: '03.11.1985', ph: '[DOB_2]' },
     { icon: 'card', type: 'Карта', raw: '4081 •••• 7765', ph: '[Card_3]' },
     { icon: 'user', type: 'ФИО', raw: 'Дмитрий Орлов', ph: '[Person_4]' },
-    { icon: 'phone', type: 'Телефон', raw: '+7 905 777-88-99', ph: '[Phone_3]' },
-    { icon: 'hash', type: 'СНИЛС', raw: '987-654-321 00', ph: '[SNILS_2]' },
-    { icon: 'mail', type: 'Email', raw: 'd.orlov@corp.ru', ph: '[Email_3]' },
+    { icon: 'phone', type: 'Телефон', raw: '+7 905 613-90-48', ph: '[Phone_3]' },
+    { icon: 'hash', type: 'СНИЛС', raw: '214-507-993 18', ph: '[SNILS_2]' },
+    { icon: 'mail', type: 'Email', raw: 'd.orlov@example.ru', ph: '[Email_3]' },
     { icon: 'id', type: 'Паспорт', raw: '4509 №445566', ph: '[Passport_3]' },
     { icon: 'pin', type: 'Адрес', raw: 'ул. Садовая, 3', ph: '[Address_3]' },
     { icon: 'doc', type: 'Договор', raw: '№ NK-6042', ph: '[Contract_3]' },
+    { icon: 'photo', type: 'Скан', raw: 'акт.pdf', ph: '[Scan_1]' },
   ],
 ];
 

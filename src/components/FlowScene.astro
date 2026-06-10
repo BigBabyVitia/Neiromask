@@ -56,16 +56,21 @@ const g1 = Ground(1.5, 1.5);
       {/* пол */}
       <polyline class="fs-floor" points={g1.h} />
       <polyline class="fs-floor" points={g1.v} />
-      {/* призрачные входы (файл / тикет) позади */}
-      <g class="fs-drift fs-d1">
+      {/* поток входов: карточки по очереди слетаются на платформу */}
+      <g class="fs-in fs-i1" style={delta(2.95, 0.0, 1.08, 1.5, 1.5, 0.62)}>
         <polygon class="fs-face fs-dim" points={cube(2.4, -0.4, 1.0, 1.1, 0.8, 0.16).top} />
         <polygon class="fs-face fs-dim" points={cube(2.4, -0.4, 1.0, 1.1, 0.8, 0.16).l} />
         <polygon class="fs-face fs-dim" points={cube(2.4, -0.4, 1.0, 1.1, 0.8, 0.16).r} />
       </g>
-      <g class="fs-drift fs-d2">
+      <g class="fs-in fs-i2" style={delta(-0.4, 2.0, 0.78, 1.5, 1.5, 0.62)}>
         <polygon class="fs-face fs-dim" points={cube(-0.9, 1.6, 0.7, 1.0, 0.8, 0.16).top} />
         <polygon class="fs-face fs-dim" points={cube(-0.9, 1.6, 0.7, 1.0, 0.8, 0.16).l} />
         <polygon class="fs-face fs-dim" points={cube(-0.9, 1.6, 0.7, 1.0, 0.8, 0.16).r} />
+      </g>
+      <g class="fs-in fs-i3" style={delta(3.1, 2.6, 0.98, 1.5, 1.5, 0.62)}>
+        <polygon class="fs-face fs-dim" points={cube(2.6, 2.2, 0.9, 1.0, 0.8, 0.16).top} />
+        <polygon class="fs-face fs-dim" points={cube(2.6, 2.2, 0.9, 1.0, 0.8, 0.16).l} />
+        <polygon class="fs-face fs-dim" points={cube(2.6, 2.2, 0.9, 1.0, 0.8, 0.16).r} />
       </g>
       {/* платформа-приёмник */}
       <polygon class="fs-face fs-base" points={cube(0.2, 0.2, 0, 2.6, 2.6, 0.28).top} />
@@ -105,14 +110,18 @@ const g1 = Ground(1.5, 1.5);
       <polyline class="fs-edge" points={line(0.7, 2.15, 0.18, 2.4, 2.15, 0.18)} />
       {/* найденные PII-поля — подсвечиваются по очереди */}
       <g class="fs-pop fs-p1">
-        <polygon class="fs-acc-face" points={cube(1.55, 0.6, 0.18, 0.95, 0.32, 0.001).top} />
+        <polygon class="fs-warn-face" points={cube(1.55, 0.6, 0.18, 0.95, 0.32, 0.001).top} />
       </g>
       <g class="fs-pop fs-p2">
-        <polygon class="fs-acc-face" points={cube(0.6, 1.3, 0.18, 1.1, 0.32, 0.001).top} />
+        <polygon class="fs-warn-face" points={cube(0.6, 1.3, 0.18, 1.1, 0.32, 0.001).top} />
       </g>
       <g class="fs-pop fs-p3">
-        <polygon class="fs-acc-face" points={cube(1.45, 1.65, 0.18, 0.95, 0.32, 0.001).top} />
+        <polygon class="fs-warn-face" points={cube(1.45, 1.65, 0.18, 0.95, 0.32, 0.001).top} />
       </g>
+      {/* кольца-пульсы в момент находки (порядок = порядок вспышек p1, p3, p2) */}
+      <circle class="fs-ring fs-r1" cx={Pn(2.02, 0.76, 0.18)[0]} cy={Pn(2.02, 0.76, 0.18)[1]} r="5" />
+      <circle class="fs-ring fs-r2" cx={Pn(1.92, 1.81, 0.18)[0]} cy={Pn(1.92, 1.81, 0.18)[1]} r="5" />
+      <circle class="fs-ring fs-r3" cx={Pn(1.15, 1.46, 0.18)[0]} cy={Pn(1.15, 1.46, 0.18)[1]} r="5" />
       {/* сканирующий луч */}
       <g class="fs-scan">
         <polyline class="fs-beam" points={line(0.4, 0.4, 0.18, 2.6, 0.4, 0.18)} />
@@ -159,10 +168,11 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-face fs-base" points={cube(2.2, 1.4, 0.32, 0.9, 0.9, 0.22).r} />
         <circle class="fs-dot fs-dot-allow" cx={Pn(2.65, 1.85, 0.54)[0]} cy={Pn(2.65, 1.85, 0.54)[1]} r="3" />
       </g>
-      {/* токены, бегущие по рельсам */}
+      {/* токены с разной судьбой: синий маскируется, красный блокируется
+          (отскакивает у шлюза), нейтральный проходит насквозь */}
       <circle class="fs-tok fs-tok1" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, -0.15, 1.85, 0.55)}`} />
-      <circle class="fs-tok fs-tok2" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 1.25, 2.75, 0.55)}`} />
-      <circle class="fs-tok fs-tok3" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 2.65, 1.85, 0.55)}`} />
+      <circle class="fs-tok fs-tok--warn fs-tok2" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 1.25, 2.75, 0.55)}`} />
+      <circle class="fs-tok fs-tok--pass fs-tok3" cx={Pn(1.25, 1.25, 1.6)[0]} cy={Pn(1.25, 1.25, 1.6)[1]} r="3" style={`${delta(1.25, 1.25, 1.6, 2.65, 1.85, 0.55)}`} />
       </g>
     </svg>
   )
@@ -179,10 +189,10 @@ const g1 = Ground(1.5, 1.5);
       <polygon class="fs-face fs-base" points={cube(0, 0.4, 0, 1.4, 1.4, 1.1).top} />
       <polygon class="fs-face fs-base" points={cube(0, 0.4, 0, 1.4, 1.4, 1.1).l} />
       <polygon class="fs-face fs-base" points={cube(0, 0.4, 0, 1.4, 1.4, 1.1).r} />
-      {/* реальные данные «заперты» внутри */}
-      <polyline class="fs-edge fs-acc" points={line(0.25, 0.65, 1.1, 1.15, 0.65, 1.1)} />
-      <polyline class="fs-edge fs-acc" points={line(0.25, 1.0, 1.1, 0.95, 1.0, 1.1)} />
-      <circle class="fs-lock" cx={Pn(1.05, 1.55, 1.1)[0]} cy={Pn(1.05, 1.55, 1.1)[1]} r="3.2" />
+      {/* реальные данные остаются в контуре — красные плашки, тот же язык,
+          что найденные поля на шаге 2 */}
+      <polygon class="fs-warn-face" points={cube(0.3, 0.6, 1.1, 0.8, 0.35, 0.001).top} />
+      <polygon class="fs-warn-face" points={cube(0.3, 1.1, 1.1, 0.6, 0.35, 0.001).top} />
       {/* граница контура */}
       <polyline class="fs-bound" points={line(2.0, -0.4, 0, 2.0, -0.4, 1.7)} />
       <polyline class="fs-bound" points={line(2.0, 2.8, 0, 2.0, 2.8, 1.7)} />
@@ -193,11 +203,17 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.4, 0, 1.4, 1.4, 1.1).l} />
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.4, 0, 1.4, 1.4, 1.1).r} />
       </g>
-      {/* обезличенный пакет, идущий наружу */}
-      <g class="fs-packet" style={`${delta(1.0, 1.1, 1.25, 3.4, 1.1, 1.25)}`}>
-        <polygon class="fs-acc-face" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).top} />
-        <polygon class="fs-face fs-acc" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).l} />
-        <polygon class="fs-face fs-acc" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).r} />
+      {/* пакет в два этапа: до границы — красный (реальные данные),
+          на границе трансформация, дальше — синий (обезличенный) */}
+      <g class="fs-leg fs-leg1" style={`${delta(1.0, 1.1, 1.25, 2.0, 1.1, 1.25)}`}>
+        <polygon class="fs-warn-face" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).top} />
+        <polygon class="fs-face fs-warn" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).l} />
+        <polygon class="fs-face fs-warn" points={cube(0.7, 0.85, 1.25, 0.6, 0.5, 0.12).r} />
+      </g>
+      <g class="fs-leg fs-leg2" style={`${delta(2.0, 1.1, 1.25, 3.4, 1.1, 1.25)}`}>
+        <polygon class="fs-acc-face" points={cube(1.7, 0.85, 1.25, 0.6, 0.5, 0.12).top} />
+        <polygon class="fs-face fs-acc" points={cube(1.7, 0.85, 1.25, 0.6, 0.5, 0.12).l} />
+        <polygon class="fs-face fs-acc" points={cube(1.7, 0.85, 1.25, 0.6, 0.5, 0.12).r} />
       </g>
       </g>
     </svg>
@@ -216,8 +232,6 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-acc-face" points={cube(1.2, 0.5, 0.9, 1.0, 1.0, 0.6).top} />
         <polygon class="fs-face fs-acc" points={cube(1.2, 0.5, 0.9, 1.0, 1.0, 0.6).l} />
         <polygon class="fs-face fs-acc" points={cube(1.2, 0.5, 0.9, 1.0, 1.0, 0.6).r} />
-        {/* замочная скважина на верхней грани */}
-        <circle class="fs-keyhole" cx={Pn(1.7, 1.0, 1.5)[0]} cy={Pn(1.7, 1.0, 1.5)[1]} r="3.4" />
       </g>
       {/* приходящий обезличенный ответ — справа, едет к ключу */}
       <g class="fs-resp" style={`${delta(3.3, 1.1, 1.45, 1.9, 1.1, 1.45)}`}>
@@ -225,24 +239,29 @@ const g1 = Ground(1.5, 1.5);
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.85, 1.45, 0.6, 0.5, 0.12).l} />
         <polygon class="fs-face fs-acc" points={cube(3.0, 0.85, 1.45, 0.6, 0.5, 0.12).r} />
       </g>
-      {/* журнал — стопка записей слева, появляются по очереди с галочкой */}
+      {/* восстановленный результат — зелёный куб выходит из ключа и ложится
+          на планшет журнала */}
+      <g class="fs-emerge" style={`${delta(1.7, 1.0, 1.56, 0.1, 2.05, 0.42)}`}>
+        <polygon class="fs-safe-face" points={cube(1.45, 0.8, 1.5, 0.5, 0.4, 0.12).top} />
+        <polygon class="fs-face fs-safe" points={cube(1.45, 0.8, 1.5, 0.5, 0.4, 0.12).l} />
+        <polygon class="fs-face fs-safe" points={cube(1.45, 0.8, 1.5, 0.5, 0.4, 0.12).r} />
+      </g>
+      {/* журнал — один планшет; записи (строка + галочка) штампуются по
+          очереди на его верхней грани, без наложения друг на друга */}
+      <polygon class="fs-face fs-base" points={cube(-0.9, 1.55, 0, 2.0, 1.15, 0.2).top} />
+      <polygon class="fs-face fs-base" points={cube(-0.9, 1.55, 0, 2.0, 1.15, 0.2).l} />
+      <polygon class="fs-face fs-base" points={cube(-0.9, 1.55, 0, 2.0, 1.15, 0.2).r} />
       <g class="fs-log fs-l1">
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0, 1.5, 0.55, 0.14).top} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0, 1.5, 0.55, 0.14).l} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0, 1.5, 0.55, 0.14).r} />
-        <path class="fs-check" d={`M ${Pn(-0.45, 1.78, 0.15).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
+        <polyline class="fs-edge" points={line(-0.65, 1.85, 0.2, 0.45, 1.85, 0.2)} />
+        <path class="fs-check" d={`M ${Pn(0.6, 1.85, 0.2).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
       </g>
       <g class="fs-log fs-l2">
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.2, 1.5, 0.55, 0.14).top} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.2, 1.5, 0.55, 0.14).l} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.2, 1.5, 0.55, 0.14).r} />
-        <path class="fs-check" d={`M ${Pn(-0.45, 1.78, 0.35).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
+        <polyline class="fs-edge" points={line(-0.65, 2.15, 0.2, 0.45, 2.15, 0.2)} />
+        <path class="fs-check" d={`M ${Pn(0.6, 2.15, 0.2).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
       </g>
       <g class="fs-log fs-l3">
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.4, 1.5, 0.55, 0.14).top} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.4, 1.5, 0.55, 0.14).l} />
-        <polygon class="fs-face fs-base" points={cube(-0.7, 1.5, 0.4, 1.5, 0.55, 0.14).r} />
-        <path class="fs-check" d={`M ${Pn(-0.45, 1.78, 0.55).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
+        <polyline class="fs-edge" points={line(-0.65, 2.45, 0.2, 0.45, 2.45, 0.2)} />
+        <path class="fs-check" d={`M ${Pn(0.6, 2.45, 0.2).join(' ')} l 2.4 2.4 l 4.6 -5.2`} />
       </g>
       </g>
     </svg>

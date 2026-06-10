@@ -1,0 +1,74 @@
+---
+import { t } from '../copy';
+
+// Ответ на главный страх ИБ — «а вдруг маскирование пропустит ПДн».
+// Надёжность через процесс (fail-safe), а не через обещание точности в %.
+// Переиспользует визуальный язык Policies: .policy-card / .mock-line / .aj-note.
+// Акценты берём из существующих классов: block → красный, allow → зелёный.
+const items = [
+  { cls: 'block' },
+  { cls: 'allow' },
+];
+---
+
+<section class="section aj-proof" id="reliability">
+  <div class="section-head">
+    <span class="aj-chip">A</span>
+    <h2 data-copy="rel.h2">{t('rel.h2')}</h2>
+    <p data-copy="rel.lead">{t('rel.lead')}</p>
+  </div>
+
+  <div class="policy-cards rel-cards">
+    {
+      items.map((it, i) => (
+        <article class={`policy-card ${it.cls}`}>
+          <div class="policy-body">
+            <h3 data-copy={`rel.items.${i}.title`}>{t(`rel.items.${i}.title`)}</h3>
+            <p data-copy={`rel.items.${i}.text`}>{t(`rel.items.${i}.text`)}</p>
+            <div class="mock-line" data-copy={`rel.items.${i}.mock`}>{t(`rel.items.${i}.mock`)}</div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <p class="rel-caption" data-copy="rel.caption">{t('rel.caption')}</p>
+</section>
+
+<style>
+  /* нижний девайдер — как у .band::after (контент-ширина, центр), т.к. соседний
+     Pricing не .band и линию между блоками сам не рисует */
+  #reliability {
+    position: relative;
+  }
+  #reliability::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(1132px, calc(100% - 48px));
+    height: 1px;
+    background: var(--color-line);
+    pointer-events: none;
+  }
+  /* 2 карточки на всю ширину сетки сайта (как .policy-cards, но 2 колонки) */
+  .rel-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* чуть больше воздуха между заголовком карточки и текстом (9px → 12px) */
+  .rel-cards .policy-card p {
+    margin-top: 12px;
+  }
+  .rel-caption {
+    margin: 22px auto 0;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 14px;
+  }
+  @media (max-width: 640px) {
+    .rel-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
